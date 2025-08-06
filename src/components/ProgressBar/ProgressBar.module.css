@@ -1,0 +1,58 @@
+/* Progress Bar */
+.progressWrapper {
+  background: white;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  width: 100%;
+}
+
+.progressContainer {
+  max-width: 600px;
+  margin: 0 auto;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, #009eda, #0ea5e9);
+  border-radius: 100px;
+  width: 5%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.progressBar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.progressText {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+}
