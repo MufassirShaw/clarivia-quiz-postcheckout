@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import Image from "next/image"
 import styles from "./SeverityQuestion.module.css"
 
@@ -11,15 +11,16 @@ interface SeverityOption {
   value: number
 }
 
+export interface SeverityQuestionType {
+  id: string
+  title: string
+  subtitle?: string
+  options: SeverityOption[]
+}
 interface SeverityQuestionProps {
-  question: {
-    id: string
-    title: string
-    subtitle?: string
-    options: SeverityOption[]
-  }
-  onAnswer: (answer: any) => void
-  currentAnswer?: any
+  question: SeverityQuestionType
+  onAnswer: (answer: number) => void
+  currentAnswer?: number
 }
 
 export default function SeverityQuestion({
@@ -27,17 +28,13 @@ export default function SeverityQuestion({
   onAnswer,
   currentAnswer,
 }: SeverityQuestionProps) {
-  const [selectedOption, setSelectedOption] = useState<string | null>(
-    currentAnswer?.value?.toString() || null
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(
+    currentAnswer || null
   )
 
   const handleOptionSelect = (option: SeverityOption) => {
-    setSelectedOption(option.id)
-    onAnswer({
-      value: option.value,
-      label: option.label,
-      id: option.id,
-    })
+    setSelectedAnswer(option.value)
+    onAnswer(option.value)
   }
 
   return (
@@ -46,7 +43,7 @@ export default function SeverityQuestion({
         <div
           key={option.id}
           className={`${styles.severityOption} ${
-            selectedOption === option.id ? styles.selected : ""
+            selectedAnswer === option.value ? styles.selected : ""
           }`}
           onClick={() => handleOptionSelect(option)}
         >

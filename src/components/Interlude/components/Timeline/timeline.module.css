@@ -1,0 +1,197 @@
+/* Spartan Timeline Page */
+.spartan-timeline-page {
+  background: #f9fafb;
+  padding: 40px 20px;
+  min-height: 100vh;
+  margin: -40px -20px; /* Negative margins to extend beyond parent padding */
+  text-align: center;
+}
+
+.spartan-timeline-title {
+  font-size: 32px;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  font-weight: 600;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.spartan-timeline-subtitle {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 60px;
+}
+
+.timeline-bars-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 16px;
+  height: 300px;
+  margin-bottom: 20px;
+}
+
+.timeline-bar {
+  width: 80px;
+  background: white;
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.timeline-bar.bar-1 {
+  height: 120px;
+}
+.timeline-bar.bar-2 {
+  height: 160px;
+}
+.timeline-bar.bar-3 {
+  height: 200px;
+}
+.timeline-bar.bar-4 {
+  height: 240px;
+}
+.timeline-bar.bar-5 {
+  height: 280px;
+}
+.timeline-bar.bar-6 {
+  height: 300px;
+}
+
+.timeline-bar .bar-fill {
+  width: 100%;
+  height: 0;
+  border-radius: 8px 8px 0 0;
+  transition: height 1.5s ease-out;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.timeline-bar.bar-1 .bar-fill {
+  background: #e0f2fe;
+}
+.timeline-bar.bar-2 .bar-fill {
+  background: #bae6fd;
+}
+.timeline-bar.bar-3 .bar-fill {
+  background: #7dd3fc;
+}
+.timeline-bar.bar-4 .bar-fill {
+  background: #38bdf8;
+}
+.timeline-bar.bar-5 .bar-fill {
+  background: #0ea5e9;
+}
+.timeline-bar.bar-6 .bar-fill {
+  background: #009eda;
+}
+
+.timeline-bar .bar-fill.animate {
+  height: 100%;
+}
+
+.goal-marker {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.goal-marker span {
+  background: #009eda;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.goal-circle {
+  width: 12px;
+  height: 12px;
+  background: #009eda;
+  border-radius: 50%;
+  margin: 8px auto 0;
+  box-shadow: 0 0 0 3px rgba(0, 158, 218, 0.3);
+}
+
+.timeline-dates {
+  display: flex;
+  justify-content: space-between;
+  max-width: 520px;
+  margin: 0 auto 40px;
+  color: #666;
+  font-size: 16px;
+}
+
+/* Spartan Loading Sequence */
+.spartan-loading-page {
+  background: #f9fafb;
+  min-height: 100vh;
+  margin: -40px -20px;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  position: relative;
+}
+
+.spartan-loading-page.with-popup {
+  background: #f9fafb;
+}
+
+.loading-content {
+  text-align: center;
+}
+
+.loading-text {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.spartan-progress-bar {
+  width: 300px;
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  margin: 0 auto 12px;
+  overflow: hidden;
+}
+
+.spartan-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #009eda, #0ea5e9);
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.spartan-progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}

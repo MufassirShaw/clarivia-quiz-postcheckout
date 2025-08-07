@@ -1,14 +1,19 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
-import SeverityQuestion from "../SeverityQuestion"
-import SingleChoiceQuestion from "../SingleChoiceQuestion"
-import MultipleChoiceQuestion from "../MultipleChoiceQuestion"
-import FormQuestion from "../FormQuestion"
+import { useState, useEffect, useMemo, useCallback } from "react"
+import SeverityQuestion, { SeverityQuestionType } from "../SeverityQuestion"
+import SingleChoiceQuestion, {
+  SingleChoiceQuestionType,
+} from "../SingleChoiceQuestion"
+import MultipleChoiceQuestion, {
+  MultipleChoiceQuestionType,
+} from "../MultipleChoiceQuestion"
+import TextQuestion from "../TextQuestion"
 import { quizData } from "@/utils"
-import { QuestionType } from "@/type/quiz"
+import { AnswerType, InterludeTypes, QuestionType } from "@/type/quiz"
 import styles from "./Quiz.module.css"
 import { ProgressBar } from "../ProgressBar"
+import { Interlude } from "../Interlude"
 
 interface QuizProps {
   onComplete?: (answers: any) => void
@@ -16,170 +21,226 @@ interface QuizProps {
 
 export default function Quiz({ onComplete }: QuizProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-  const [answers, setAnswers] = useState<Record<string, any>>({})
+  const [answers, setAnswers] = useState<Record<string, AnswerType>>({})
   const [isLoading, setIsLoading] = useState(false)
 
   const currentQuestion = quizData.questions[currentQuestionIndex]
 
   // Initialize session on first question
-  useEffect(() => {
-    initializeSession()
-  }, [])
+  // useEffect(() => {
+  //   initializeSession()
+  // }, [])
 
-  const initializeSession = async () => {
-    try {
-      setIsLoading(true)
-      const response = await fetch("/api/sessions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+  // const initializeSession = async () => {
+  //   try {
+  //     setIsLoading(true)
+  //     const response = await fetch("/api/sessions", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     })
 
-      if (response.ok) {
-        const data = await response.json()
-        console.log("Session initialized:", data)
-      }
-    } catch (error) {
-      console.error("Error initializing session:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  //     if (response.ok) {
+  //       const data = await response.json()
+  //       console.log("Session initialized:", data)
+  //     }
+  //   } catch (error) {
+  //     console.error("Error initializing session:", error)
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
 
-  const submitAnswer = async (questionId: string, answer: any) => {
-    try {
-      const response = await fetch(`/api/questions/${questionId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          answer_data: answer,
-        }),
-      })
+  // const submitAnswer = async (questionId: string, answer: any) => {
+  //   try {
+  //     const response = await fetch(`/api/questions/${questionId}`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         answer_data: answer,
+  //       }),
+  //     })
 
-      if (response.ok) {
-        console.log("Answer submitted successfully")
-      }
-    } catch (error) {
-      console.error("Error submitting answer:", error)
-    }
-  }
+  //     if (response.ok) {
+  //       console.log("Answer submitted successfully")
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting answer:", error)
+  //   }
+  // }
 
-  const handleAnswer = async (answer: any) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [currentQuestion.id]: answer,
-    }))
+  const goToNextQuestion = useCallback(
+    (currenAnswers: Record<string, AnswerType>, index: number) => {
+      const nextIndex = index + 1
 
-    await submitAnswer(currentQuestion.id, answer)
-
-    setTimeout(() => {
-      nextQuestion()
-    }, 500)
-  }
-
-  const nextQuestion = () => {
-    const nextIndex = currentQuestionIndex + 1
-
-    // Check if we should skip this question based on conditions
-    if (currentQuestion.showIf) {
-      const shouldShow = checkCondition(currentQuestion.showIf)
-      if (!shouldShow) {
-        setCurrentQuestionIndex(nextIndex)
+      if (nextIndex >= quizData.questions.length - 1) {
+        // TODO: complete the quiz
         return
       }
-    }
 
-    if (nextIndex < quizData.questions.length) {
-      setCurrentQuestionIndex(nextIndex)
-    } else {
-      // Quiz completed
-      completeQuiz()
-    }
-  }
+      const nextQuestion = quizData.questions[nextIndex]
 
-  const checkCondition = (conditions: Record<string, any>) => {
-    for (const [key, expectedValue] of Object.entries(conditions)) {
-      const answer = answers[key]
-      if (!answer) return false
-
-      const actualValue = answer.value || answer.values || answer
-      if (Array.isArray(actualValue)) {
-        if (!actualValue.includes(expectedValue)) return false
+      if (nextQuestion.resolver && !nextQuestion.resolver(currenAnswers)) {
+        goToNextQuestion(currenAnswers, nextIndex)
       } else {
-        if (actualValue !== expectedValue) return false
+        setCurrentQuestionIndex(nextIndex)
       }
-    }
-    return true
-  }
+    },
+    []
+  )
 
-  const completeQuiz = async () => {
-    try {
-      setIsLoading(true)
-
-      // Complete the session
-      const response = await fetch("/api/sessions/1/complete", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+  const handleAnswer = useCallback(
+    async (answer: AnswerType) => {
+      setAnswers((prev) => {
+        const newAnswers = {
+          ...prev,
+          [currentQuestion.id]: answer,
+        }
+        setTimeout(() => {
+          goToNextQuestion(newAnswers, currentQuestionIndex)
+        }, 500)
+        return newAnswers
       })
+    },
+    [currentQuestion.id, goToNextQuestion, currentQuestionIndex]
+  )
 
-      if (response.ok) {
-        console.log("Quiz completed successfully")
-        onComplete?.(answers)
-      }
-    } catch (error) {
-      console.error("Error completing quiz:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  // const checkCondition = (conditions: Record<string, any>) => {
+  //   for (const [key, expectedValue] of Object.entries(conditions)) {
+  //     const answer = answers[key]
+  //     if (!answer) return false
 
-  const renderQuestion = () => {
+  //     const actualValue = answer.value || answer.values || answer
+  //     if (Array.isArray(actualValue)) {
+  //       if (!actualValue.includes(expectedValue)) return false
+  //     } else {
+  //       if (actualValue !== expectedValue) return false
+  //     }
+  //   }
+  //   return true
+  // }
+
+  // const completeQuiz = async () => {
+  //   try {
+  //     setIsLoading(true)
+
+  //     // Complete the session
+  //     const response = await fetch("/api/sessions/complete", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     })
+
+  //     if (response.ok) {
+  //       console.log("Quiz completed successfully")
+  //       onComplete?.(answers)
+  //     }
+  //   } catch (error) {
+  //     console.error("Error completing quiz:", error)
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
+
+  const component = useMemo(() => {
     if (!currentQuestion) return null
-
-    const commonProps = {
-      question: currentQuestion,
-      onAnswer: handleAnswer,
-      currentAnswer: answers[currentQuestion.id],
-    }
 
     switch (currentQuestion.type) {
       case QuestionType.Severity:
-        return <SeverityQuestion {...commonProps} />
+        return (
+          <SeverityQuestion
+            onAnswer={handleAnswer}
+            currentAnswer={answers[currentQuestion.id] as number}
+            question={currentQuestion as SeverityQuestionType}
+          />
+        )
       case QuestionType.SingleChoice:
-        return <SingleChoiceQuestion {...commonProps} />
+        return (
+          <SingleChoiceQuestion
+            currentAnswer={answers[currentQuestion.id] as string}
+            onAnswer={handleAnswer}
+            question={currentQuestion as SingleChoiceQuestionType}
+            key={currentQuestion.id}
+          />
+        )
       case QuestionType.MultipleChoice:
-        return <MultipleChoiceQuestion {...commonProps} />
-      case QuestionType.Form:
-        return <FormQuestion {...commonProps} />
+        return (
+          <MultipleChoiceQuestion
+            currentAnswer={answers[currentQuestion.id] as string[]}
+            onAnswer={handleAnswer}
+            question={currentQuestion as MultipleChoiceQuestionType}
+            key={currentQuestion.id}
+          />
+        )
+      case QuestionType.Text: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { resolver: _, ...rest } = currentQuestion ?? {}
+        return (
+          <TextQuestion
+            {...rest}
+            onAnswer={handleAnswer}
+            currentAnswer={answers[currentQuestion.id] as string}
+            key={rest.id}
+          />
+        )
+      }
+      case QuestionType.Interlude:
+        return (
+          <Interlude
+            handleSubmit={() => {
+              goToNextQuestion(answers, currentQuestionIndex)
+            }}
+            type={currentQuestion.component as InterludeTypes}
+            answers={answers}
+          />
+        )
       default:
         return <div>Unknown question type: {currentQuestion.type}</div>
     }
-  }
+  }, [
+    answers,
+    currentQuestion,
+    handleAnswer,
+    goToNextQuestion,
+    currentQuestionIndex,
+  ])
+
   const progress = useMemo(() => {
     if (!quizData.totalQuestions) return 0
     return ((currentQuestionIndex + 1) / quizData.totalQuestions) * 100
   }, [currentQuestionIndex])
 
-  if (isLoading) {
-    return (
-      <div className={styles.quizLoading}>
-        <div className={styles.loadingSpinner}></div>
-        <p>Loading...</p>
-      </div>
-    )
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className={styles.quizLoading}>
+  //       <div className={styles.loadingSpinner}></div>
+  //       <p>Loading...</p>
+  //     </div>
+  //   )
+  // }
 
   return (
     <>
       <ProgressBar progress={progress} />
       <div className={styles.quizMain}>
         <div className={styles.quizContent}>
-          <div className={styles.questionWrapper}>
+          <div
+            className={styles.questionWrapper}
+            style={{
+              backgroundColor:
+                currentQuestion?.type === QuestionType.Interlude
+                  ? "transparent"
+                  : "white",
+              boxShadow:
+                currentQuestion?.type === QuestionType.Interlude
+                  ? "none"
+                  : "0 1px 3px rgba(0, 0, 0, 0.1)",
+            }}
+          >
             <div className={styles.questionHeader}>
               <h2 className={styles.questionTitle}>{currentQuestion?.title}</h2>
               {currentQuestion?.subtitle && (
@@ -188,7 +249,7 @@ export default function Quiz({ onComplete }: QuizProps) {
                 </p>
               )}
             </div>
-            {renderQuestion()}
+            {component}
           </div>
         </div>
       </div>

@@ -16,12 +16,12 @@
 }
 
 .severityOption:hover {
-  border-color: #667eea;
+  border-color: #009eda;
   transform: translateY(-2px);
 }
 
 .severityOption.selected {
-  border-color: #667eea;
+  border-color: #009eda;
   background: #f8f9ff;
 }
 

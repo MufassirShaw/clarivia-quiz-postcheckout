@@ -8,15 +8,17 @@ interface MultipleChoiceOption {
   label: string
 }
 
+export interface MultipleChoiceQuestionType {
+  id: string
+  title: string
+  subtitle?: string
+  options: MultipleChoiceOption[]
+}
+
 interface MultipleChoiceQuestionProps {
-  question: {
-    id: string
-    title: string
-    subtitle?: string
-    options: MultipleChoiceOption[]
-  }
-  onAnswer: (answer: any) => void
-  currentAnswer?: any
+  question: MultipleChoiceQuestionType
+  onAnswer: (answer: string[]) => void
+  currentAnswer?: string[]
 }
 
 export default function MultipleChoiceQuestion({
@@ -25,7 +27,7 @@ export default function MultipleChoiceQuestion({
   currentAnswer,
 }: MultipleChoiceQuestionProps) {
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
-    currentAnswer?.values || []
+    currentAnswer || []
   )
 
   const handleOptionToggle = (option: MultipleChoiceOption) => {
@@ -44,6 +46,10 @@ export default function MultipleChoiceQuestion({
     // })
   }
 
+  const handleSubmit = () => {
+    onAnswer(selectedOptions)
+  }
+
   return (
     <div className={styles.optionsList}>
       {question.options.map((option) => (
@@ -60,11 +66,22 @@ export default function MultipleChoiceQuestion({
             name={option.label}
             value={option.value}
             className={styles.optionCheckbox}
+            onChange={() => handleOptionToggle(option)}
             checked={selectedOptions.includes(option.value)}
           />
           <span className={styles.optionLabel}>{option.label}</span>
         </button>
       ))}
+
+      <div className="button-container">
+        <button
+          className="primary-button"
+          onClick={handleSubmit}
+          disabled={!selectedOptions?.length}
+        >
+          Continue
+        </button>
+      </div>
     </div>
   )
 }

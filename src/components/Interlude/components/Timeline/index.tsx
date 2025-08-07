@@ -1,0 +1,73 @@
+import { useMemo } from "react"
+import styles from "./timeline.module.css"
+
+const currentMonth = new Date().toLocaleString("default", { month: "long" })
+
+interface TimelineProps {
+  handleSubmit: () => void
+  severity: number
+}
+
+const WEEKS: Record<number, number> = {
+  1: 6,
+  2: 8,
+  3: 10,
+  4: 12,
+}
+
+export const Timeline = ({ handleSubmit, severity = 2 }: TimelineProps) => {
+  const endDate = useMemo(() => {
+    const weeks = WEEKS[severity]
+
+    const date = new Date()
+    date.setDate(date.getDate() + weeks * 7)
+    return date.toLocaleString("default", { month: "long", year: "numeric" })
+  }, [severity])
+
+  return (
+    <div className={styles.spartanTimelinePage}>
+      <h2 className={styles.spartanTimelineTitle}>
+        Your personalized path to clear nails
+      </h2>
+      <p className={styles.spartanTimelineSubtitle}>
+        Based on your answers, we expect you to see visible improvement{" "}
+        {endDate}
+      </p>
+      <div className={styles.timelineBarsContainer}>
+        <div className={`${styles.timelineBar} ${styles.bar1}`}>
+          <div className={styles.barFill} data-delay="0"></div>
+        </div>
+        <div className={`${styles.timelineBar} ${styles.bar2}`}>
+          <div className={styles.barFill} data-delay="200"></div>
+        </div>
+        <div className={`${styles.timelineBar} ${styles.bar3}`}>
+          <div className={styles.barFill} data-delay="400"></div>
+        </div>
+        <div className={`${styles.timelineBar} ${styles.bar4}`}>
+          <div className={styles.barFill} data-delay="600"></div>
+          <div className={styles.goalMarker}>
+            <span>Goal</span>
+            <div className={styles.goalCircle}></div>
+          </div>
+        </div>
+        <div className={`${styles.timelineBar} ${styles.bar5}`}>
+          <div className={styles.barFill} data-delay="800"></div>
+        </div>
+        <div className={`${styles.timelineBar} ${styles.bar6}`}>
+          <div className={styles.barFill} data-delay="1000"></div>
+        </div>
+      </div>
+
+      <div className={styles.timelineDates}>
+        <span>{currentMonth}</span>
+        <span>{endDate.split(" ")[0]}</span>
+      </div>
+
+      <div className="button-container" onClick={handleSubmit}>
+        <button className="primary-button" id="continueBtn">
+          Continue
+        </button>
+      </div>
+    </div>
+  )
+}

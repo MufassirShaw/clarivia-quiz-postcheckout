@@ -8,15 +8,17 @@ interface SingleChoiceOption {
   label: string
 }
 
+export interface SingleChoiceQuestionType {
+  id: string
+  title: string
+  subtitle?: string
+  options: SingleChoiceOption[]
+}
+
 interface SingleChoiceQuestionProps {
-  question: {
-    id: string
-    title: string
-    subtitle?: string
-    options: SingleChoiceOption[]
-  }
-  onAnswer: (answer: any) => void
-  currentAnswer?: any
+  question: SingleChoiceQuestionType
+  onAnswer: (answer: string) => void
+  currentAnswer?: string
 }
 
 export default function SingleChoiceQuestion({
@@ -25,22 +27,19 @@ export default function SingleChoiceQuestion({
   currentAnswer,
 }: SingleChoiceQuestionProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(
-    currentAnswer?.value || null
+    currentAnswer || null
   )
 
   const handleOptionSelect = (option: SingleChoiceOption) => {
     setSelectedOption(option.value)
-    onAnswer({
-      value: option.value,
-      label: option.label,
-    })
+    onAnswer(option.value)
   }
 
   return (
     <div className={styles.singleChoiceOptions}>
       {question.options.map((option) => (
         <button
-          key={option.value}
+          key={`${question.id}__${option.value}`}
           className={`${styles.singleChoiceOption} ${
             selectedOption === option.value ? styles.selected : ""
           }`}
@@ -48,6 +47,14 @@ export default function SingleChoiceQuestion({
           type="button"
         >
           <div className={styles.optionContent}>
+            <input
+              type="radio"
+              name={`${question.id}__${option.value}`}
+              value={option.value}
+              className={styles.optionRadio}
+              onChange={() => handleOptionSelect(option)}
+              checked={selectedOption === option.value}
+            />
             <div className={styles.optionLabel}>{option.label}</div>
           </div>
         </button>

@@ -16,11 +16,18 @@
 }
 
 .singleChoiceOption:hover {
-  border-color: #667eea;
+  border-color: #009eda;
+}
+
+.optionRadio {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  accent-color: #009eda;
 }
 
 .singleChoiceOption.selected {
-  border-color: #667eea;
+  border-color: #009eda;
   background: #f8f9ff;
 }
 

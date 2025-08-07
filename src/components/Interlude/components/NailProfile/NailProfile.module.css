@@ -1,0 +1,589 @@
+/* Spartan Style Profile Page */
+.spartanProfilePage {
+  background: #f9fafb;
+  padding: 40px 20px;
+  min-height: 100vh;
+  margin: -40px -20px; /* Negative margins to extend beyond parent padding */
+}
+
+.spartanTitle {
+  text-align: center;
+  font-size: 28px;
+  color: #1a1a1a;
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+
+.spartanSubtitle {
+  text-align: center;
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 30px;
+  font-weight: 500;
+}
+
+.spartanLevelSection {
+  max-width: 800px;
+  margin: 0 auto 40px;
+}
+
+.profileVisual {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.profileImage {
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.levelIndicatorWrapper {
+  position: relative;
+  margin: 40px 0;
+  padding: 0 20px;
+}
+
+.gradientBar {
+  height: 24px;
+  background: linear-gradient(
+    to right,
+    #4fc3f7,
+    #29b6f6,
+    #ffeb3b,
+    #ffc107,
+    #ff9800,
+    #f44336
+  );
+  border-radius: 12px;
+  margin: 20px 0 10px;
+}
+
+.levelLabels {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 14px;
+}
+
+.levelArrow {
+  position: absolute;
+  top: -40px;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.arrowBox {
+  background: #333;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.arrowPoint {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #333;
+  margin: 0 auto;
+}
+
+.levelDescription {
+  background: #ffe5e5;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 30px 0;
+}
+
+.levelDescription.low {
+  background: #e8f5e9;
+}
+
+.levelDescription.medium {
+  background: #fff3e0;
+}
+
+.levelIcon {
+  width: 40px;
+  height: 40px;
+  background: #ef5350;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.levelDescription.low .levelIcon {
+  background: #66bb6a;
+}
+
+.levelDescription.medium .levelIcon {
+  background: #ffa726;
+}
+
+.levelText strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.profileMetricsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 800px;
+  margin: 0 auto 40px;
+}
+
+.metricCard {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.metricIcon {
+  font-size: 32px;
+}
+
+.metricContent {
+  flex: 1;
+}
+
+.metricLabel {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.metricValue {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.spartanButton {
+  background: linear-gradient(135deg, #009eda, #0ea5e9);
+  color: white;
+  border: none;
+  padding: 16px 60px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 158, 218, 0.3);
+}
+
+.spartanButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 158, 218, 0.4);
+}
+
+/* Spartan Timeline Page */
+.spartanTimelinePage {
+  background: #f9fafb;
+  padding: 40px 20px;
+  min-height: 100vh;
+  margin: -40px -20px; /* Negative margins to extend beyond parent padding */
+  text-align: center;
+}
+
+.spartanTimelineTitle {
+  font-size: 32px;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  font-weight: 600;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.spartanTimelineSubtitle {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 60px;
+}
+
+.timelineBarsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 16px;
+  height: 300px;
+  margin-bottom: 20px;
+}
+
+.timelineBar {
+  width: 80px;
+  background: white;
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.timelineBar.bar1 {
+  height: 120px;
+}
+.timelineBar.bar2 {
+  height: 160px;
+}
+.timelineBar.bar3 {
+  height: 200px;
+}
+.timelineBar.bar4 {
+  height: 240px;
+}
+.timelineBar.bar5 {
+  height: 280px;
+}
+.timelineBar.bar6 {
+  height: 300px;
+}
+
+.timelineBar .barFill {
+  width: 100%;
+  height: 0;
+  border-radius: 8px 8px 0 0;
+  transition: height 1.5s ease-out;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.timelineBar.bar1 .barFill {
+  background: #e0f2fe;
+}
+.timelineBar.bar2 .barFill {
+  background: #bae6fd;
+}
+.timelineBar.bar3 .barFill {
+  background: #7dd3fc;
+}
+.timelineBar.bar4 .barFill {
+  background: #38bdf8;
+}
+.timelineBar.bar5 .barFill {
+  background: #0ea5e9;
+}
+.timelineBar.bar6 .barFill {
+  background: #009eda;
+}
+
+.timelineBar .barFill.animate {
+  height: 100%;
+}
+
+.goalMarker {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.goalMarker span {
+  background: #009eda;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.goalCircle {
+  width: 12px;
+  height: 12px;
+  background: #009eda;
+  border-radius: 50%;
+  margin: 8px auto 0;
+  box-shadow: 0 0 0 3px rgba(0, 158, 218, 0.3);
+}
+
+.timelineDates {
+  display: flex;
+  justify-content: space-between;
+  max-width: 520px;
+  margin: 0 auto 40px;
+  color: #666;
+  font-size: 16px;
+}
+
+/* Spartan Loading Sequence */
+.spartanLoadingPage {
+  background: #f9fafb;
+  min-height: 100vh;
+  margin: -40px -20px;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  position: relative;
+}
+
+.spartanLoadingPage.withPopup {
+  background: #f9fafb;
+}
+
+.loadingContent {
+  text-align: center;
+}
+
+.loadingText {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.spartanProgressBar {
+  width: 300px;
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  margin: 0 auto 12px;
+  overflow: hidden;
+}
+
+.spartanProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #009eda, #0ea5e9);
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.spartanProgressFill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.loadingPercentage {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Spartan Popup */
+.spartanPopupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.spartanPopup {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 480px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Popup content displayed directly on overlay */
+.popupContentDirect {
+  text-align: center;
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 600px;
+  padding: 40px;
+}
+
+.popupContentDirect .popupSubtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.popupContentDirect .popupQuestion {
+  color: white;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  line-height: 1.4;
+}
+
+.popupContentDirect .popupButtons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.popupSubtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.popupQuestion {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 32px;
+  font-weight: 600;
+}
+
+.popupButtons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.popupBtn {
+  padding: 12px 40px;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.popupBtn.no {
+  background: white;
+  color: #6b7280;
+  border: 2px solid white;
+}
+
+.popupBtn.yes {
+  background: linear-gradient(135deg, #009eda, #0ea5e9);
+  color: white;
+}
+
+.popupBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Loading Bars List */
+.loadingBarsList {
+  max-width: 600px;
+  width: 100%;
+}
+
+.loadingBarItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.barLabel {
+  flex: 0 0 200px;
+  text-align: left;
+  font-size: 16px;
+  color: #333;
+}
+
+.barTrack {
+  flex: 1;
+  height: 24px;
+  background: #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.barProgress {
+  height: 100%;
+  background: linear-gradient(90deg, #009eda, #0ea5e9);
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.barProgress::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+.barProgress.complete {
+  background: linear-gradient(90deg, #059669, #10b981);
+}
+
+.checkMark {
+  color: #4caf50;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.barPercent {
+  font-size: 14px;
+  color: #666;
+  min-width: 40px;
+}

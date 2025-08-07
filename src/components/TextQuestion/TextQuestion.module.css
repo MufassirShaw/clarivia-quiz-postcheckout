@@ -31,7 +31,7 @@
 
 .formTextarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #009eda;
 }
 
 @keyframes fadeIn {
