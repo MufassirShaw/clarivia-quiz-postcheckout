@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
+    "@microsoft/clarity": "^1.0.0",
+    "@next/third-parties": "^15.4.6",
     "next": "15.4.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
