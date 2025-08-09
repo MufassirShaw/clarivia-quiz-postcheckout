@@ -4,7 +4,7 @@ import { useState } from "react"
 import styles from "./TextQuestion.module.css"
 
 interface TextQuestionProps extends React.HTMLAttributes<HTMLTextAreaElement> {
-  onAnswer: (answer: string) => void
+  onAnswer: (answer: string) => Promise<void>
   currentAnswer?: string
   placeholder?: string
   required?: boolean
@@ -22,9 +22,11 @@ export default function TextQuestion({
   ...rest
 }: TextQuestionProps) {
   const [answer, setAnswer] = useState<string>(currentAnswer || "")
-
-  const handleSubmit = () => {
-    onAnswer(answer.trim())
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const handleSubmit = async () => {
+    setIsSubmitting(true)
+    await onAnswer(answer || "N/A") // for some reason empty answer's aren't accepted on the api even if the field is optional
+    setIsSubmitting(true)
   }
 
   return (
@@ -48,9 +50,9 @@ export default function TextQuestion({
         <button
           className="primary-button"
           onClick={handleSubmit}
-          disabled={!answer.trim() && required}
+          disabled={(!answer.trim() && required) || isSubmitting}
         >
-          Continue
+          {isSubmitting ? "Submitting.." : "Continue"}
         </button>
       </div>
     </div>

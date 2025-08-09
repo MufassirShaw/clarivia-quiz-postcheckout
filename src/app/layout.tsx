@@ -5,6 +5,7 @@ import { Inter } from "next/font/google"
 import ClarityInit from "@/components/ClarityInit"
 import { GoogleTagManager } from "@next/third-parties/google"
 import { analyticsConfig } from "@/config/analytics"
+import { ToastContainer } from "react-toastify"
 
 export const metadata: Metadata = {
   title: "Clarivia",
@@ -28,6 +29,7 @@ export default function RootLayout({
       </head>
       <body>
         <ClarityInit />
+        <ToastContainer theme="colored" hideProgressBar />
         <GoogleTagManager gtmId={analyticsConfig.gtmTag} />
         <div className={styles.quizContainer}>
           <header className={styles.trustHeader}>

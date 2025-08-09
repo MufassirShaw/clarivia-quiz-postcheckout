@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import styles from "./personalInfo.module.css"
+import { ILead } from "@/type/lead"
+import { useState } from "react"
 
 // Validation schema
 const schema = z.object({
@@ -31,7 +33,11 @@ const ErrorMessage = ({ message }: { message?: string }) => (
   </p>
 )
 
-export const PersonalInfo = ({ onSuccess }: { onSuccess: () => void }) => {
+export const PersonalInfo = ({
+  onAnswer,
+}: {
+  onAnswer: (info: Partial<ILead>) => Promise<void>
+}) => {
   const {
     register,
     handleSubmit,
@@ -40,10 +46,16 @@ export const PersonalInfo = ({ onSuccess }: { onSuccess: () => void }) => {
     resolver: zodResolver(schema),
     mode: "onChange", // validates as user types
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const onSubmit = (data: FormData) => {
-    console.log("Form submitted:", data)
-    onSuccess()
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true)
+    await onAnswer({
+      first_name: data.firstName,
+      last_name: data.lastName,
+      phone: data.phone.replace(/\D/g, ""),
+    })
+    setIsSubmitting(false)
   }
 
   return (
@@ -106,8 +118,12 @@ export const PersonalInfo = ({ onSuccess }: { onSuccess: () => void }) => {
       </div>
 
       <div className="button-container">
-        <button className="primary-button" type="submit" disabled={!isValid}>
-          Continue
+        <button
+          className="primary-button"
+          type="submit"
+          disabled={!isValid || isSubmitting}
+        >
+          {isSubmitting ? "Submitting..." : "Continue"}
         </button>
       </div>
     </form>

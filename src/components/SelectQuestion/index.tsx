@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import styles from "./selectQuestion.module.css"
+import { ILead } from "@/type/lead"
 
 interface Option {
   value: string
@@ -7,7 +8,7 @@ interface Option {
 }
 
 interface FormProps {
-  onAnswer: (answer: string) => void
+  onAnswer: (state: Partial<ILead>) => Promise<void>
   required?: boolean
   placeholder?: string
   options: Option[]
@@ -26,17 +27,18 @@ export const SelectQuestion: React.FC<FormProps> = ({
   currentAnswer,
 }) => {
   const [selectedOption, setSelectedOption] = useState(currentAnswer ?? "")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true)
+    await onAnswer({ lead_state: selectedOption })
+    setIsSubmitting(false)
+  }
 
   return (
     <div>
       {banner && <div className={styles.urgencyBanner}>{banner}</div>}
-      <form
-        id="questionForm"
-        onSubmit={(e) => {
-          e.preventDefault()
-          onAnswer(selectedOption)
-        }}
-      >
+      <div>
         <div className={styles.formGroup}>
           <label className={styles.formLabel}>{label}</label>
           <select
@@ -57,13 +59,13 @@ export const SelectQuestion: React.FC<FormProps> = ({
         <div className="button-container">
           <button
             className="primary-button"
-            type="submit"
-            disabled={!selectedOption}
+            disabled={!selectedOption || isSubmitting}
+            onClick={handleSubmit}
           >
-            Continue
+            {isSubmitting ? "Submitting..." : "Continue"}
           </button>
         </div>
-      </form>
+      </div>
     </div>
   )
 }

@@ -131,7 +131,7 @@ export const quizData = {
       required: true,
       label: "Please describe your nail symptoms",
       resolver: (answers: Record<string, AnswerType>) =>
-        answers["nail_concerns"] === "other",
+        answers["nail_concerns"] === "Other nail symptom",
     },
     // Question 4: Affected Nails
     {
@@ -199,7 +199,7 @@ export const quizData = {
       placeholder: 'Share any details or type "skip"',
       required: false,
       resolver: (answers: Record<string, AnswerType>) =>
-        answers["previous_treatments"] === "yes",
+        answers["previous_treatments"] === "Yes",
     },
 
     // Question 8: Other Symptoms
@@ -215,10 +215,19 @@ export const quizData = {
         },
         { value: "pain", label: "Pain of the affected nail/toe(s)" },
         { value: "bleeding", label: "Bleeding of the affected nail" },
-        { value: "pus", label: "Pus or drainage from the nail(s)" },
-        { value: "dark_color", label: "Dark black color of the nail bed" },
-        { value: "rash", label: "Rash on surrounding skin" },
-        { value: "growth", label: "New bump/growth under the nail" },
+        { value: "pus", label: "Pus or drainage from the nail(s) " },
+        {
+          value: "dark_color",
+          label: "Dark black color of the nail bed or surrounding skin",
+        },
+        {
+          value: "rash",
+          label: "Rash on the skin surrounding the affected nail ",
+        },
+        {
+          value: "growth",
+          label: "New bump/nodule/growth under the nail or on toe",
+        },
         { value: "none", label: "None of the above" },
       ],
     },
@@ -322,7 +331,7 @@ export const quizData = {
       type: QuestionType.Text,
       title: "Please provide further information about this condition",
       resolver: (answers: Record<string, AnswerType>) =>
-        answers["liver_kidney_disease"] === "yes",
+        answers["liver_kidney_disease"] === "Yes",
       name: "details",
       label: "Condition details",
       placeholder: "Please describe your liver or kidney condition",
@@ -335,13 +344,13 @@ export const quizData = {
       title: "Are you currently taking any of these medications?",
       subtitle: "Check all that apply",
       triggerHardStop: (answers: AnswerType) =>
-        !(answers as string[]).includes("none"),
+        !(answers as string[]).includes("None"),
       options: [
         { value: "terbinafine", label: "Terbinafine or naftifine" },
         {
           value: "azole",
           label:
-            'Antifungal medications ending in "-azole" (e.g., fluconazole)',
+            "Antifungal medications ending in “-azole” (e.g., fluconazole)",
         },
         {
           value: "terfenadine",
@@ -411,9 +420,9 @@ export const quizData = {
       type: QuestionType.SingleChoice,
       title:
         "Are you currently pregnant, breastfeeding or planning to become pregnant?",
-      triggerHardStop: (answer: AnswerType) => answer === "yes",
+      triggerHardStop: (answer: AnswerType) => answer === "Yes",
       resolver: (answers: Record<string, AnswerType>) =>
-        answers["sex_at_birth"] === "female",
+        answers["sex_at_birth"] === "Female",
       options: [
         { value: "yes", label: "Yes" },
         { value: "no", label: "No" },
@@ -425,8 +434,8 @@ export const quizData = {
       consentType: ConsentType.PregnancyConsent,
       title: "Consent (Pregnancy)",
       resolver: (answers: Record<string, AnswerType>) =>
-        answers["sex_at_birth"] === "female" &&
-        answers["pregnancy_status"] === "no",
+        answers["sex_at_birth"] === "Female" &&
+        answers["pregnancy_status"] === "No",
     },
     {
       id: "personal_info",
@@ -444,12 +453,89 @@ export const quizData = {
         { value: "no", label: "No" },
       ],
     },
+    {
+      id: "concerns_details",
+
+      type: QuestionType.Text,
+      title: "Please share your concerns or questions",
+      name: "concerns_details",
+      label: "Your concerns or questions",
+      placeholder: "Please describe your concerns or questions",
+      required: true,
+      resolver: (answers: Record<string, AnswerType>) =>
+        answers["specific_concerns"] === "Yes",
+    },
     // Question 20: Comprehensive Treatment Consent
     {
       id: "treatment_consent",
       type: QuestionType.Consent,
       title: "Consent (Nail Fungus Treatment)",
       consentType: ConsentType.TreatmentConsent,
+      isLast: true,
     },
   ],
+}
+
+const prodQuestionMap: Record<string, number | null> = {
+  severity: null, // No direct mapping, used for initialization
+  symptom_duration: 1311,
+  nail_concerns: 1308,
+  affected_nails: 1310,
+  previous_diagnosis: 1314,
+  previous_treatments: 1315,
+  treatment_details: 1316,
+  other_symptoms: 1312,
+  additional_symptoms: 1309,
+  liver_kidney_disease: 1317,
+  liver_kidney_details: 1318,
+  last_checkup: 1307,
+  medication_interactions: 1319,
+  medical_conditions: 1304,
+  current_medications: 1305,
+  allergies: 1306,
+  basic_info: null, // Multiple fields, handled specially
+  sex_at_birth: 1301,
+  pregnancy_status: 1302,
+  pregnancy_consent: 1303,
+  personal_info: null, // Multiple fields, handled specially
+  specific_concerns: 1320,
+  concerns_details: 1321,
+  treatment_consent: 1322,
+}
+
+// update
+const devQuestionMap: Record<string, number | null> = {
+  severity: null, // No direct mapping, used for initialization
+  symptom_duration: 1300911,
+  nail_concerns: 1300908,
+  affected_nails: 1300910,
+  previous_diagnosis: 1300914,
+  previous_treatments: 1300915,
+  treatment_details: 1300916,
+  other_symptoms: 1300912,
+  additional_symptoms: 1300913,
+  liver_kidney_disease: 1300917,
+  liver_kidney_details: 1300918,
+  last_checkup: 1300907,
+  medication_interactions: 1300919,
+  medical_conditions: 1300904,
+  current_medications: 1300905,
+  allergies: 1300906,
+  basic_info: null, // Multiple fields, handled specially
+  sex_at_birth: 1300901,
+  pregnancy_status: 1300902,
+  pregnancy_consent: 1300903,
+  personal_info: null, // Multiple fields, handled specially
+  specific_concerns: 1300920,
+  concerns_details: 1300921,
+  treatment_consent: 1300922,
+}
+
+const isProd = process.env.NODE_ENV === "production"
+
+export const getDosableId = (id: string) => {
+  if (isProd) {
+    return prodQuestionMap[id]
+  }
+  return devQuestionMap[id]
 }

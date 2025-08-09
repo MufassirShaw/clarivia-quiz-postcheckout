@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import styles from "./basicInfo.module.css"
+import { ILead } from "@/type/lead"
+import { useState } from "react"
 
 const today = new Date()
 
@@ -41,7 +43,11 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-export const BasicInfo = ({ onSuccess }: { onSuccess: () => void }) => {
+export const BasicInfo = ({
+  onAnswer,
+}: {
+  onAnswer: (info: Partial<ILead>) => Promise<void>
+}) => {
   const {
     register,
     handleSubmit,
@@ -50,10 +56,12 @@ export const BasicInfo = ({ onSuccess }: { onSuccess: () => void }) => {
     resolver: zodResolver(schema),
     mode: "onChange", // validates as user types
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const onSubmit = (data: FormData) => {
-    console.log("Form submitted:", data)
-    onSuccess()
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true)
+    await onAnswer(data)
+    setIsSubmitting(false)
   }
 
   return (
@@ -102,7 +110,7 @@ export const BasicInfo = ({ onSuccess }: { onSuccess: () => void }) => {
 
       <div className="button-container">
         <button className="primary-button" type="submit" disabled={!isValid}>
-          Continue
+          {isSubmitting ? "Submitting..." : "Continue"}
         </button>
       </div>
     </form>

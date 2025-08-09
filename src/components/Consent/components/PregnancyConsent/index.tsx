@@ -2,11 +2,21 @@ import { useState } from "react"
 import styles from "./pregnancyConsent.module.css"
 
 interface PregnancyConsentProps {
-  handleSubmit: () => void
+  handleSubmit: (answer: string) => Promise<void>
 }
+
+const consent =
+  "I have read and understand the above information, I understand the risks and wish to proceed"
 
 export const PregnancyConsent = ({ handleSubmit }: PregnancyConsentProps) => {
   const [hasRead, setHasRead] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleAccept = async () => {
+    setIsSubmitting(true)
+    await handleSubmit(consent)
+    setIsSubmitting(true)
+  }
 
   return (
     <>
@@ -30,17 +40,14 @@ export const PregnancyConsent = ({ handleSubmit }: PregnancyConsentProps) => {
             onChange={(e) => setHasRead(e.target.checked)}
             checked={hasRead}
           />
-          <span>
-            I have read and understand the above information, I understand the
-            risks and wish to proceed
-          </span>
+          <span>{consent}</span>
         </label>
       </div>
       <div className="button-container">
         <button
           className="primary-button"
-          disabled={!hasRead}
-          onClick={handleSubmit}
+          disabled={!hasRead || isSubmitting}
+          onClick={handleAccept}
         >
           I Agree & Continue
         </button>

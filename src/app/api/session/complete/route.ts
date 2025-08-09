@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { apiConfig } from "@/config/api"
-import { getSession } from "@/utils/session"
+import { clearLead, getLead } from "@/utils/lead"
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
     // Get session_id from cookie
-    const sessionId = await getSession()
+    const { sessionId } = await getLead()
 
     // Validate session exists
     if (!sessionId) {
@@ -16,16 +16,17 @@ export async function POST() {
         },
         {
           status: 401,
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type, X-API-KEY",
-          },
         }
       )
     }
 
     const api_url = `${apiConfig.baseUrl}/sessions/${sessionId}/complete`
+
+    const body = {
+      med: [apiConfig.productId],
+      couponCode: null,
+      session_id: sessionId,
+    }
 
     const response = await fetch(api_url, {
       method: "POST",
@@ -33,7 +34,20 @@ export async function POST() {
         "X-API-KEY": apiConfig.apiKey,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(body),
     })
+
+    if (!response.ok) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Something went wrong.",
+        },
+        {
+          status: response.status,
+        }
+      )
+    }
 
     const responseData = await response.text()
 
@@ -42,16 +56,11 @@ export async function POST() {
       { data: responseData },
       {
         status: response.status,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, X-API-KEY",
-        },
       }
     )
 
     // Clear the session cookie
-    nextResponse.cookies.delete("session_id")
+    await clearLead()
 
     return nextResponse
   } catch (error) {
@@ -60,11 +69,6 @@ export async function POST() {
       { error: "Internal Server Error" },
       {
         status: 500,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, X-API-KEY",
-        },
       }
     )
   }
@@ -73,10 +77,5 @@ export async function POST() {
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, X-API-KEY",
-    },
   })
 }

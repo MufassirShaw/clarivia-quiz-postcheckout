@@ -1,13 +1,22 @@
 import { useState } from "react"
 import styles from "./treatmentConsent.module.css"
 
+const consent =
+  "I have read and understand the information and I wish to continue"
+
 export const TreatmentConsent = ({
   handleSubmit,
 }: {
-  handleSubmit: () => void
+  handleSubmit: (answer: string) => Promise<void>
 }) => {
   const [hasRead, setHasRead] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const handleAccept = async () => {
+    setIsSubmitting(true)
+    await handleSubmit(consent)
+    setIsSubmitting(false)
+  }
   return (
     <>
       <div className={styles.consentContent}>
@@ -197,8 +206,8 @@ export const TreatmentConsent = ({
       <div className="button-container">
         <button
           className="primary-button"
-          disabled={!hasRead}
-          onClick={handleSubmit}
+          disabled={!hasRead || isSubmitting}
+          onClick={handleAccept}
         >
           I Agree & Continue
         </button>

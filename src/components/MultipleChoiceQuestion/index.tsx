@@ -17,7 +17,7 @@ export interface MultipleChoiceQuestionType {
 
 interface MultipleChoiceQuestionProps {
   question: MultipleChoiceQuestionType
-  onAnswer: (answer: string[]) => void
+  onAnswer: (answer: string[]) => Promise<void>
   currentAnswer?: string[]
 }
 
@@ -29,6 +29,7 @@ export default function MultipleChoiceQuestion({
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
     currentAnswer || []
   )
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleOptionToggle = (option: MultipleChoiceOption) => {
     const newSelectedOptions = selectedOptions.includes(option.value)
@@ -36,23 +37,24 @@ export default function MultipleChoiceQuestion({
       : [...selectedOptions, option.value]
 
     setSelectedOptions(newSelectedOptions)
-    // onAnswer({
-    //   values: newSelectedOptions,
-    //   labels: newSelectedOptions
-    //     .map(
-    //       (value) => question.options.find((opt) => opt.value === value)?.label
-    //     )
-    //     .filter(Boolean),
-    // })
   }
 
-  const handleSubmit = () => {
-    onAnswer(selectedOptions)
+  const options = question.options ?? []
+  const handleSubmit = async () => {
+    setIsSubmitting(true)
+    const selected = options
+      .filter((op) => {
+        return selectedOptions.includes(op.value)
+      })
+      .map((op) => op.label)
+
+    await onAnswer(selected)
+    setIsSubmitting(false)
   }
 
   return (
     <div className={styles.optionsList}>
-      {question.options.map((option) => (
+      {options.map((option) => (
         <button
           key={option.value}
           className={`${styles.optionItem} ${
@@ -77,9 +79,9 @@ export default function MultipleChoiceQuestion({
         <button
           className="primary-button"
           onClick={handleSubmit}
-          disabled={!selectedOptions?.length}
+          disabled={!selectedOptions?.length || isSubmitting}
         >
-          Continue
+          {isSubmitting ? "Submitting..." : "Continue"}
         </button>
       </div>
     </div>

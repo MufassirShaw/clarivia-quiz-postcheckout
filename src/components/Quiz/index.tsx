@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo, useCallback } from "react"
+import { useState, useMemo, useCallback } from "react"
 import SeverityQuestion, { SeverityQuestionType } from "../SeverityQuestion"
 import SingleChoiceQuestion, {
   SingleChoiceQuestionType,
@@ -9,7 +9,7 @@ import MultipleChoiceQuestion, {
   MultipleChoiceQuestionType,
 } from "../MultipleChoiceQuestion"
 import TextQuestion from "../TextQuestion"
-import { quizData } from "@/utils"
+import { getDosableId, quizData } from "@/utils"
 import {
   AnswerType,
   ConsentType,
@@ -24,65 +24,50 @@ import { BasicInfo } from "../BasicInfo"
 import { PersonalInfo } from "../PersonalInfo"
 import { Consent } from "../Consent"
 import { Modal } from "../Modal"
+import { toast } from "react-toastify"
+import { ILead } from "@/type/lead"
 
-interface QuizProps {
-  onComplete?: (answers: Record<string, AnswerType>) => void
-}
-
-const index = 16
-export default function Quiz({ onComplete }: QuizProps) {
+export default function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, AnswerType>>({})
-  const [isLoading, setIsLoading] = useState(false)
   const [hardStopModalOpen, setHardStopModalOpen] = useState(false)
 
   const currentQuestion = quizData.questions[currentQuestionIndex]
 
-  // Initialize session on first question
-  // useEffect(() => {
-  //   initializeSession()
-  // }, [])
+  const saveAnswerToDosable = useCallback(
+    async ({ qid, answer }: { qid: number; answer: AnswerType }) => {
+      const response = await fetch(`/api/questions/${qid}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          [qid]: {
+            value: answer,
+            question: currentQuestion.title,
+          },
+        }),
+      })
 
-  // const initializeSession = async () => {
-  //   try {
-  //     setIsLoading(true)
-  //     const response = await fetch("/api/sessions", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     })
+      if (!response.ok) {
+        throw Error(response.statusText)
+      }
+    },
+    [currentQuestion]
+  )
 
-  //     if (response.ok) {
-  //       const data = await response.json()
-  //       console.log("Session initialized:", data)
-  //     }
-  //   } catch (error) {
-  //     console.error("Error initializing session:", error)
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
+  const completeSession = useCallback(async () => {
+    const response = await fetch(`/api/session/complete`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
 
-  // const submitAnswer = async (questionId: string, answer: any) => {
-  //   try {
-  //     const response = await fetch(`/api/questions/${questionId}`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         answer_data: answer,
-  //       }),
-  //     })
-
-  //     if (response.ok) {
-  //       console.log("Answer submitted successfully")
-  //     }
-  //   } catch (error) {
-  //     console.error("Error submitting answer:", error)
-  //   }
-  // }
+    if (!response.ok) {
+      throw Error(response.statusText)
+    }
+  }, [])
 
   const goToNextQuestion = useCallback(
     (currenAnswers: Record<string, AnswerType>, index: number) => {
@@ -108,46 +93,86 @@ export default function Quiz({ onComplete }: QuizProps) {
     async (answer: AnswerType) => {
       if (currentQuestion?.triggerHardStop?.(answer)) {
         setHardStopModalOpen(true)
-
         return
       }
 
-      setAnswers((prev) => {
-        const newAnswers = {
-          ...prev,
-          [currentQuestion.id]: answer,
+      try {
+        const dosableQId = getDosableId(currentQuestion.id)
+
+        if (dosableQId) {
+          await saveAnswerToDosable({ qid: dosableQId, answer })
         }
-        setTimeout(() => {
-          goToNextQuestion(newAnswers, currentQuestionIndex)
-        }, 500)
-        return newAnswers
-      })
+
+        if (currentQuestion.isLast && dosableQId) {
+          await completeSession()
+          return
+        }
+        setAnswers((prev) => {
+          const newAnswers = {
+            ...prev,
+            [currentQuestion.id]: answer,
+          }
+          setTimeout(() => {
+            goToNextQuestion(newAnswers, currentQuestionIndex)
+          }, 500)
+          return newAnswers
+        })
+      } catch (error) {
+        console.log(error)
+        toast.error("Opps! Something went wrong")
+      }
     },
-    [currentQuestion, goToNextQuestion, currentQuestionIndex]
+    [
+      currentQuestion,
+      goToNextQuestion,
+      currentQuestionIndex,
+      saveAnswerToDosable,
+      completeSession,
+    ]
   )
 
-  // const completeQuiz = async () => {
-  //   try {
-  //     setIsLoading(true)
+  const updateLead = useCallback(
+    async (lead: Partial<ILead>) => {
+      const response = await fetch(`/api/leads`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(lead),
+      })
 
-  //     // Complete the session
-  //     const response = await fetch("/api/sessions/complete", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     })
+      if (!response.ok) {
+        throw Error(response.statusText)
+      }
 
-  //     if (response.ok) {
-  //       console.log("Quiz completed successfully")
-  //       onComplete?.(answers)
-  //     }
-  //   } catch (error) {
-  //     console.error("Error completing quiz:", error)
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
+      goToNextQuestion(answers, currentQuestionIndex)
+    },
+    [answers, currentQuestionIndex, goToNextQuestion]
+  )
+
+  const initializeQuiz = useCallback(
+    async (answer: AnswerType) => {
+      try {
+        const response = await fetch("/api/leads", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+
+        if (response.ok) {
+          handleAnswer(answer)
+          return
+        }
+
+        throw Error(response.statusText)
+      } catch (error) {
+        toast.error("Opps! something went wrong")
+        console.error("Error initializing session:", error)
+      }
+    },
+    [handleAnswer]
+  )
 
   const component = useMemo(() => {
     if (!currentQuestion) return null
@@ -156,7 +181,7 @@ export default function Quiz({ onComplete }: QuizProps) {
       case QuestionType.Severity:
         return (
           <SeverityQuestion
-            onAnswer={handleAnswer}
+            onAnswer={initializeQuiz}
             currentAnswer={answers[currentQuestion.id] as number}
             question={currentQuestion as SeverityQuestionType}
           />
@@ -193,6 +218,10 @@ export default function Quiz({ onComplete }: QuizProps) {
       }
 
       case QuestionType.Select: {
+        /**
+         * This is only used for lead.state atm
+         * Needs to be refactored if we get another select type question
+         */
         return (
           <SelectQuestion
             key={currentQuestion.id}
@@ -204,7 +233,7 @@ export default function Quiz({ onComplete }: QuizProps) {
             placeholder={currentQuestion.placeholder}
             banner={currentQuestion.banner}
             currentAnswer={answers[currentQuestion.id] as string}
-            onAnswer={handleAnswer}
+            onAnswer={updateLead}
             required={currentQuestion.required}
           />
         )
@@ -221,21 +250,14 @@ export default function Quiz({ onComplete }: QuizProps) {
           />
         )
       case QuestionType.Basic_Info:
-        return (
-          <BasicInfo
-            onSuccess={() => {
-              handleAnswer("")
-            }}
-            key={currentQuestion.id}
-          />
-        )
+        return <BasicInfo onAnswer={updateLead} key={currentQuestion.id} />
 
       case QuestionType.Personal_Info:
         return (
           <PersonalInfo
-            onSuccess={() => {
-              handleAnswer("")
-            }}
+            onAnswer={(d) =>
+              updateLead({ ...d, gender: answers["sex_at_birth"] as string })
+            }
             key={currentQuestion.id}
           />
         )
@@ -243,9 +265,7 @@ export default function Quiz({ onComplete }: QuizProps) {
         return (
           <Consent
             type={currentQuestion.consentType as ConsentType}
-            handleSubmit={() => {
-              goToNextQuestion(answers, currentQuestionIndex)
-            }}
+            handleSubmit={handleAnswer}
             key={currentQuestion.id}
           />
         )
@@ -253,9 +273,11 @@ export default function Quiz({ onComplete }: QuizProps) {
         return <div>Unknown question type: {currentQuestion.type}</div>
     }
   }, [
-    answers,
     currentQuestion,
+    initializeQuiz,
+    answers,
     handleAnswer,
+    updateLead,
     goToNextQuestion,
     currentQuestionIndex,
   ])

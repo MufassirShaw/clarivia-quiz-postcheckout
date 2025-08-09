@@ -17,7 +17,7 @@ export interface SingleChoiceQuestionType {
 
 interface SingleChoiceQuestionProps {
   question: SingleChoiceQuestionType
-  onAnswer: (answer: string) => void
+  onAnswer: (answer: string) => Promise<void>
   currentAnswer?: string
 }
 
@@ -29,10 +29,13 @@ export default function SingleChoiceQuestion({
   const [selectedOption, setSelectedOption] = useState<string | null>(
     currentAnswer || null
   )
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleOptionSelect = (option: SingleChoiceOption) => {
+  const handleOptionSelect = async (option: SingleChoiceOption) => {
     setSelectedOption(option.value)
-    onAnswer(option.value)
+    setIsSubmitting(true)
+    await onAnswer(option.label)
+    setIsSubmitting(false)
   }
 
   return (
@@ -54,6 +57,7 @@ export default function SingleChoiceQuestion({
               className={styles.optionRadio}
               onChange={() => handleOptionSelect(option)}
               checked={selectedOption === option.value}
+              disabled={isSubmitting}
             />
             <div className={styles.optionLabel}>{option.label}</div>
           </div>
