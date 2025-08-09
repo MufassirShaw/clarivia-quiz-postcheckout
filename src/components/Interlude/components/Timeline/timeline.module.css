@@ -1,13 +1,11 @@
 /* Spartan Timeline Page */
-.spartan-timeline-page {
+.spartanTimelinePage {
   background: #f9fafb;
   padding: 40px 20px;
-  min-height: 100vh;
-  margin: -40px -20px; /* Negative margins to extend beyond parent padding */
   text-align: center;
 }
 
-.spartan-timeline-title {
+.spartanTimelineTitle {
   font-size: 32px;
   color: #1a1a1a;
   margin-bottom: 16px;
@@ -17,13 +15,13 @@
   margin-right: auto;
 }
 
-.spartan-timeline-subtitle {
+.spartanTimelineSubtitle {
   font-size: 18px;
   color: #666;
   margin-bottom: 60px;
 }
 
-.timeline-bars-container {
+.timelineBarsContainer {
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -32,8 +30,8 @@
   margin-bottom: 20px;
 }
 
-.timeline-bar {
-  width: 80px;
+.timelineBar {
+  width: 40px;
   background: white;
   border-radius: 8px 8px 0 0;
   position: relative;
@@ -41,66 +39,81 @@
   align-items: flex-end;
 }
 
-.timeline-bar.bar-1 {
-  height: 120px;
-}
-.timeline-bar.bar-2 {
-  height: 160px;
-}
-.timeline-bar.bar-3 {
-  height: 200px;
-}
-.timeline-bar.bar-4 {
-  height: 240px;
-}
-.timeline-bar.bar-5 {
-  height: 280px;
-}
-.timeline-bar.bar-6 {
-  height: 300px;
-}
-
-.timeline-bar .bar-fill {
+.barFill {
   width: 100%;
   height: 0;
   border-radius: 8px 8px 0 0;
-  transition: height 1.5s ease-out;
   position: absolute;
-  bottom: 0;
+  /* bottom: 0; */
+  top: 0;
   left: 0;
 }
 
-.timeline-bar.bar-1 .bar-fill {
-  background: #e0f2fe;
-}
-.timeline-bar.bar-2 .bar-fill {
-  background: #bae6fd;
-}
-.timeline-bar.bar-3 .bar-fill {
-  background: #7dd3fc;
-}
-.timeline-bar.bar-4 .bar-fill {
-  background: #38bdf8;
-}
-.timeline-bar.bar-5 .bar-fill {
-  background: #0ea5e9;
-}
-.timeline-bar.bar-6 .bar-fill {
-  background: #009eda;
+.bar1 {
+  height: 120px;
+  > div {
+    background: #e0f2fe;
+    height: 0;
+    animation: fillHeight 1.5s ease-out forwards;
+  }
 }
 
-.timeline-bar .bar-fill.animate {
-  height: 100%;
+.bar2 {
+  height: 160px;
+  > div {
+    height: 0;
+    background: #bae6fd;
+    animation: fillHeight 1.5s ease-out forwards;
+    animation-delay: 200ms;
+  }
+}
+.bar3 {
+  height: 200px;
+  > div {
+    background: #7dd3fc;
+    height: 0;
+    animation: fillHeight 1.5s ease-out forwards;
+    animation-delay: 400ms;
+  }
 }
 
-.goal-marker {
+.bar4 {
+  height: 240px;
+  > div:first-child {
+    background: #38bdf8;
+    height: 0;
+    animation: fillHeight 1.5s ease-out forwards;
+    animation-delay: 600ms;
+  }
+}
+
+.bar5 {
+  height: 280px;
+  > div:first-child {
+    background: #38bdf8;
+    height: 0;
+    animation: fillHeight 1.5s ease-out forwards;
+    animation-delay: 800ms;
+  }
+}
+.bar6 {
+  height: 300px;
+  > div:first-child {
+    height: 0;
+    background: #009eda;
+    animation: fillHeight 1.5s ease-out forwards;
+    animation-delay: 1000ms;
+  }
+}
+
+.goalMarker {
   position: absolute;
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
 }
 
-.goal-marker span {
+.goalMarker span {
   background: #009eda;
   color: white;
   padding: 4px 12px;
@@ -109,7 +122,7 @@
   font-weight: 600;
 }
 
-.goal-circle {
+.goalCircle {
   width: 12px;
   height: 12px;
   background: #009eda;
@@ -118,7 +131,7 @@
   box-shadow: 0 0 0 3px rgba(0, 158, 218, 0.3);
 }
 
-.timeline-dates {
+.timelineDates {
   display: flex;
   justify-content: space-between;
   max-width: 520px;
@@ -128,9 +141,8 @@
 }
 
 /* Spartan Loading Sequence */
-.spartan-loading-page {
+.spartanLoadingPage {
   background: #f9fafb;
-  min-height: 100vh;
   margin: -40px -20px;
   padding: 40px 20px;
   display: flex;
@@ -140,21 +152,21 @@
   position: relative;
 }
 
-.spartan-loading-page.with-popup {
+.spartanLoadingPage.withPopup {
   background: #f9fafb;
 }
 
-.loading-content {
+.loadingContent {
   text-align: center;
 }
 
-.loading-text {
+.loadingText {
   font-size: 16px;
   color: #666;
   margin-bottom: 20px;
 }
 
-.spartan-progress-bar {
+.spartanProgressBar {
   width: 300px;
   height: 12px;
   background: #e0e0e0;
@@ -163,7 +175,7 @@
   overflow: hidden;
 }
 
-.spartan-progress-fill {
+.spartanProgressFill {
   height: 100%;
   background: linear-gradient(90deg, #009eda, #0ea5e9);
   transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -171,7 +183,7 @@
   overflow: hidden;
 }
 
-.spartan-progress-fill::after {
+.spartanProgressFill::after {
   content: "";
   position: absolute;
   top: 0;
@@ -193,5 +205,14 @@
   }
   100% {
     transform: translateX(100%);
+  }
+}
+
+@keyframes fillHeight {
+  from {
+    height: 0;
+  }
+  to {
+    height: 100%;
   }
 }

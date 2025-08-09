@@ -35,26 +35,26 @@ export const Timeline = ({ handleSubmit, severity = 2 }: TimelineProps) => {
       </p>
       <div className={styles.timelineBarsContainer}>
         <div className={`${styles.timelineBar} ${styles.bar1}`}>
-          <div className={styles.barFill} data-delay="0"></div>
+          <div className={styles.barFill} />
         </div>
         <div className={`${styles.timelineBar} ${styles.bar2}`}>
-          <div className={styles.barFill} data-delay="200"></div>
+          <div className={styles.barFill} />
         </div>
         <div className={`${styles.timelineBar} ${styles.bar3}`}>
-          <div className={styles.barFill} data-delay="400"></div>
+          <div className={styles.barFill} />
         </div>
         <div className={`${styles.timelineBar} ${styles.bar4}`}>
-          <div className={styles.barFill} data-delay="600"></div>
+          <div className={styles.barFill} />
           <div className={styles.goalMarker}>
             <span>Goal</span>
             <div className={styles.goalCircle}></div>
           </div>
         </div>
         <div className={`${styles.timelineBar} ${styles.bar5}`}>
-          <div className={styles.barFill} data-delay="800"></div>
+          <div className={styles.barFill} />
         </div>
         <div className={`${styles.timelineBar} ${styles.bar6}`}>
-          <div className={styles.barFill} data-delay="1000"></div>
+          <div className={styles.barFill} />
         </div>
       </div>
 
@@ -63,8 +63,12 @@ export const Timeline = ({ handleSubmit, severity = 2 }: TimelineProps) => {
         <span>{endDate.split(" ")[0]}</span>
       </div>
 
-      <div className="button-container" onClick={handleSubmit}>
-        <button className="primary-button" id="continueBtn">
+      <div className="button-container">
+        <button
+          className="primary-button"
+          id="continueBtn"
+          onClick={handleSubmit}
+        >
           Continue
         </button>
       </div>

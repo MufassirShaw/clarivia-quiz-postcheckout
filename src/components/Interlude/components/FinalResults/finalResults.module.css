@@ -1,0 +1,262 @@
+/* Spartan Loading Sequence */
+.spartanLoadingPage {
+  background: #f9fafb;
+  margin: -40px -20px;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  position: relative;
+}
+
+.spartanLoadingPage.withPopup {
+  background: #f9fafb;
+}
+
+.loadingContent {
+  text-align: center;
+}
+
+.loadingText {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.spartanProgressBar {
+  width: 300px;
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  margin: 0 auto 12px;
+  overflow: hidden;
+}
+
+.spartanProgressFill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #009eda, #0ea5e9);
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.spartanProgressFill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.loadingPercentage {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Spartan Popup */
+.spartanPopupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.spartanPopup {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 480px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Popup content displayed directly on overlay */
+.popupContentDirect {
+  text-align: center;
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 600px;
+  padding: 40px;
+}
+
+.popupContentDirect .popupSubtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.popupContentDirect .popupQuestion {
+  color: white;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  line-height: 1.4;
+}
+
+.popupContentDirect .popupButtons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.popupSubtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.popupQuestion {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 32px;
+  font-weight: 600;
+}
+
+.popupButtons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.popupBtn {
+  padding: 12px 40px;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.popupBtn.no {
+  background: white;
+  color: #6b7280;
+  border: 2px solid white;
+}
+
+.popupBtn.yes {
+  background: linear-gradient(135deg, #009eda, #0ea5e9);
+  color: white;
+}
+
+.popupBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Loading Bars List */
+.loadingBarsList {
+  max-width: 600px;
+  width: 100%;
+}
+
+.loadingBarItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.barLabel {
+  flex: 0 0 200px;
+  text-align: left;
+  font-size: 16px;
+  color: #333;
+}
+
+.barTrack {
+  flex: 1;
+  height: 24px;
+  background: #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.barProgress {
+  height: 100%;
+  background: linear-gradient(90deg, #009eda, #0ea5e9);
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.barProgress::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+.barProgress.complete {
+  background: linear-gradient(90deg, #059669, #10b981);
+}
+
+.checkMark {
+  color: #4caf50;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.barPercent {
+  font-size: 14px;
+  color: #666;
+  min-width: 40px;
+}

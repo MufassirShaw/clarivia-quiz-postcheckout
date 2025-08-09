@@ -1,5 +1,62 @@
-import { AnswerType, InterludeTypes, QuestionType } from "@/type/quiz"
+import {
+  AnswerType,
+  ConsentType,
+  InterludeTypes,
+  QuestionType,
+} from "@/type/quiz"
 
+const US_STATES = [
+  { name: "Alabama", value: "AL" },
+  { name: "Alaska", value: "AK" },
+  { name: "Arizona", value: "AZ" },
+  { name: "Arkansas", value: "AR" },
+  { name: "California", value: "CA" },
+  { name: "Colorado", value: "CO" },
+  { name: "Connecticut", value: "CT" },
+  { name: "Delaware", value: "DE" },
+  { name: "Florida", value: "FL" },
+  { name: "Georgia", value: "GA" },
+  { name: "Hawaii", value: "HI" },
+  { name: "Idaho", value: "ID" },
+  { name: "Illinois", value: "IL" },
+  { name: "Indiana", value: "IN" },
+  { name: "Iowa", value: "IA" },
+  { name: "Kansas", value: "KS" },
+  { name: "Kentucky", value: "KY" },
+  { name: "Louisiana", value: "LA" },
+  { name: "Maine", value: "ME" },
+  { name: "Maryland", value: "MD" },
+  { name: "Massachusetts", value: "MA" },
+  { name: "Michigan", value: "MI" },
+  { name: "Minnesota", value: "MN" },
+  { name: "Mississippi", value: "MS" },
+  { name: "Missouri", value: "MO" },
+  { name: "Montana", value: "MT" },
+  { name: "Nebraska", value: "NE" },
+  { name: "Nevada", value: "NV" },
+  { name: "New Hampshire", value: "NH" },
+  { name: "New Jersey", value: "NJ" },
+  { name: "New Mexico", value: "NM" },
+  { name: "New York", value: "NY" },
+  { name: "North Carolina", value: "NC" },
+  { name: "North Dakota", value: "ND" },
+  { name: "Ohio", value: "OH" },
+  { name: "Oklahoma", value: "OK" },
+  { name: "Oregon", value: "OR" },
+  { name: "Pennsylvania", value: "PA" },
+  { name: "Rhode Island", value: "RI" },
+  { name: "South Carolina", value: "SC" },
+  { name: "South Dakota", value: "SD" },
+  { name: "Tennessee", value: "TN" },
+  { name: "Texas", value: "TX" },
+  { name: "Utah", value: "UT" },
+  { name: "Vermont", value: "VT" },
+  { name: "Virginia", value: "VA" },
+  { name: "Washington", value: "WA" },
+  { name: "West Virginia", value: "WV" },
+  { name: "Wisconsin", value: "WI" },
+  { name: "Wyoming", value: "WY" },
+]
 // Import quiz data
 export const quizData = {
   totalQuestions: 26,
@@ -277,6 +334,8 @@ export const quizData = {
       type: QuestionType.MultipleChoice,
       title: "Are you currently taking any of these medications?",
       subtitle: "Check all that apply",
+      triggerHardStop: (answers: AnswerType) =>
+        !(answers as string[]).includes("none"),
       options: [
         { value: "terbinafine", label: "Terbinafine or naftifine" },
         {
@@ -309,13 +368,88 @@ export const quizData = {
     // Marketing Page 4: Timeline
     {
       id: "timeline",
-      type: "interlude",
-      component: "timeline",
-      data: {
-        title: "Your personalized path to clear nails",
-        subtitle:
-          "Based on your answers, we expect you to see visible improvement",
-      },
+      type: QuestionType.Interlude,
+      component: InterludeTypes.Timeline,
+    },
+    {
+      id: "final_results",
+      type: QuestionType.Interlude,
+      component: InterludeTypes.FinalResults,
+    },
+    {
+      id: "state",
+      type: QuestionType.Select,
+      title: "Let's verify treatment availability",
+      subtitle: "Clarivia is available in all 50 states",
+      banner:
+        "🎉 Great news! Based on your answers, you're an excellent candidate for our prescription treatment",
+      name: "state",
+      label: "Your State",
+      required: true,
+      options: US_STATES,
+    },
+    {
+      id: "basic_info",
+      type: QuestionType.Basic_Info,
+      title: "Please provide your information",
+      subtitle: "Your information is 100% secure",
+    },
+    // Question 16: Sex at Birth
+    {
+      id: "sex_at_birth",
+      type: QuestionType.SingleChoice,
+      title: "What was your sex assigned at birth?",
+      options: [
+        { value: "male", label: "Male" },
+        { value: "female", label: "Female" },
+      ],
+    },
+
+    // Question 17: Pregnancy Status (conditional - shows only if female selected)
+    {
+      id: "pregnancy_status",
+      type: QuestionType.SingleChoice,
+      title:
+        "Are you currently pregnant, breastfeeding or planning to become pregnant?",
+      triggerHardStop: (answer: AnswerType) => answer === "yes",
+      resolver: (answers: Record<string, AnswerType>) =>
+        answers["sex_at_birth"] === "female",
+      options: [
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" },
+      ],
+    },
+    {
+      id: "pregnancy_consent",
+      type: QuestionType.Consent,
+      consentType: ConsentType.PregnancyConsent,
+      title: "Consent (Pregnancy)",
+      resolver: (answers: Record<string, AnswerType>) =>
+        answers["sex_at_birth"] === "female" &&
+        answers["pregnancy_status"] === "no",
+    },
+    {
+      id: "personal_info",
+      type: QuestionType.Personal_Info,
+      title: "Please introduce yourself to the doctor",
+    },
+    // Question 19: Specific Concerns
+    {
+      id: "specific_concerns",
+      type: QuestionType.SingleChoice,
+      title:
+        "Do you have any specific concerns or questions about this treatment or would you like to provide more information to the medical team?",
+      options: [
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" },
+      ],
+    },
+    // Question 20: Comprehensive Treatment Consent
+    {
+      id: "treatment_consent",
+      type: QuestionType.Consent,
+      title: "Consent (Nail Fungus Treatment)",
+      consentType: ConsentType.TreatmentConsent,
     },
   ],
 }

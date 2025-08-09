@@ -102,7 +102,11 @@ export const NailProfile = ({
         <div className={styles.levelIndicatorWrapper}>
           <div
             className={styles.levelArrow}
-            style={{ left: `${profile.position}%` }}
+            style={
+              {
+                "--target-position": `${profile.position}%`,
+              } as React.CSSProperties
+            }
           >
             <div className={styles.arrowBox}>Your level</div>
             <div className={styles.arrowPoint}></div>

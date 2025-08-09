@@ -10,19 +10,31 @@ import MultipleChoiceQuestion, {
 } from "../MultipleChoiceQuestion"
 import TextQuestion from "../TextQuestion"
 import { quizData } from "@/utils"
-import { AnswerType, InterludeTypes, QuestionType } from "@/type/quiz"
+import {
+  AnswerType,
+  ConsentType,
+  InterludeTypes,
+  QuestionType,
+} from "@/type/quiz"
 import styles from "./Quiz.module.css"
 import { ProgressBar } from "../ProgressBar"
 import { Interlude } from "../Interlude"
+import { SelectQuestion } from "../SelectQuestion"
+import { BasicInfo } from "../BasicInfo"
+import { PersonalInfo } from "../PersonalInfo"
+import { Consent } from "../Consent"
+import { Modal } from "../Modal"
 
 interface QuizProps {
-  onComplete?: (answers: any) => void
+  onComplete?: (answers: Record<string, AnswerType>) => void
 }
 
+const index = 16
 export default function Quiz({ onComplete }: QuizProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, AnswerType>>({})
   const [isLoading, setIsLoading] = useState(false)
+  const [hardStopModalOpen, setHardStopModalOpen] = useState(false)
 
   const currentQuestion = quizData.questions[currentQuestionIndex]
 
@@ -76,7 +88,7 @@ export default function Quiz({ onComplete }: QuizProps) {
     (currenAnswers: Record<string, AnswerType>, index: number) => {
       const nextIndex = index + 1
 
-      if (nextIndex >= quizData.questions.length - 1) {
+      if (nextIndex >= quizData.questions.length) {
         // TODO: complete the quiz
         return
       }
@@ -94,6 +106,12 @@ export default function Quiz({ onComplete }: QuizProps) {
 
   const handleAnswer = useCallback(
     async (answer: AnswerType) => {
+      if (currentQuestion?.triggerHardStop?.(answer)) {
+        setHardStopModalOpen(true)
+
+        return
+      }
+
       setAnswers((prev) => {
         const newAnswers = {
           ...prev,
@@ -105,23 +123,8 @@ export default function Quiz({ onComplete }: QuizProps) {
         return newAnswers
       })
     },
-    [currentQuestion.id, goToNextQuestion, currentQuestionIndex]
+    [currentQuestion, goToNextQuestion, currentQuestionIndex]
   )
-
-  // const checkCondition = (conditions: Record<string, any>) => {
-  //   for (const [key, expectedValue] of Object.entries(conditions)) {
-  //     const answer = answers[key]
-  //     if (!answer) return false
-
-  //     const actualValue = answer.value || answer.values || answer
-  //     if (Array.isArray(actualValue)) {
-  //       if (!actualValue.includes(expectedValue)) return false
-  //     } else {
-  //       if (actualValue !== expectedValue) return false
-  //     }
-  //   }
-  //   return true
-  // }
 
   // const completeQuiz = async () => {
   //   try {
@@ -184,7 +187,25 @@ export default function Quiz({ onComplete }: QuizProps) {
             {...rest}
             onAnswer={handleAnswer}
             currentAnswer={answers[currentQuestion.id] as string}
-            key={rest.id}
+            key={currentQuestion.id}
+          />
+        )
+      }
+
+      case QuestionType.Select: {
+        return (
+          <SelectQuestion
+            key={currentQuestion.id}
+            options={
+              currentQuestion.options as Array<{ name: string; value: string }>
+            }
+            name={currentQuestion.name}
+            label={currentQuestion.label ?? ""}
+            placeholder={currentQuestion.placeholder}
+            banner={currentQuestion.banner}
+            currentAnswer={answers[currentQuestion.id] as string}
+            onAnswer={handleAnswer}
+            required={currentQuestion.required}
           />
         )
       }
@@ -196,6 +217,36 @@ export default function Quiz({ onComplete }: QuizProps) {
             }}
             type={currentQuestion.component as InterludeTypes}
             answers={answers}
+            key={currentQuestion.id}
+          />
+        )
+      case QuestionType.Basic_Info:
+        return (
+          <BasicInfo
+            onSuccess={() => {
+              handleAnswer("")
+            }}
+            key={currentQuestion.id}
+          />
+        )
+
+      case QuestionType.Personal_Info:
+        return (
+          <PersonalInfo
+            onSuccess={() => {
+              handleAnswer("")
+            }}
+            key={currentQuestion.id}
+          />
+        )
+      case QuestionType.Consent:
+        return (
+          <Consent
+            type={currentQuestion.consentType as ConsentType}
+            handleSubmit={() => {
+              goToNextQuestion(answers, currentQuestionIndex)
+            }}
+            key={currentQuestion.id}
           />
         )
       default:
@@ -210,8 +261,12 @@ export default function Quiz({ onComplete }: QuizProps) {
   ])
 
   const progress = useMemo(() => {
-    if (!quizData.totalQuestions) return 0
-    return ((currentQuestionIndex + 1) / quizData.totalQuestions) * 100
+    if (!currentQuestionIndex) {
+      return 0
+    }
+
+    const totalQuestion = quizData.questions.length
+    return ((currentQuestionIndex + 1) / totalQuestion) * 100
   }, [currentQuestionIndex])
 
   // if (isLoading) {
@@ -227,7 +282,7 @@ export default function Quiz({ onComplete }: QuizProps) {
     <>
       <ProgressBar progress={progress} />
       <div className={styles.quizMain}>
-        <div className={styles.quizContent}>
+        <div className={styles.quizContent} key={currentQuestion?.id}>
           <div
             className={styles.questionWrapper}
             style={{
@@ -253,6 +308,11 @@ export default function Quiz({ onComplete }: QuizProps) {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={hardStopModalOpen}
+        onOpenChange={(op) => setHardStopModalOpen(op)}
+      />
     </>
   )
 }

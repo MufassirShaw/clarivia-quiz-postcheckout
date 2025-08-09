@@ -3,6 +3,7 @@ import { SocialProof } from "./components/SocialProof"
 import { LifestylePromise } from "./components/LifestylePromise"
 import { NailProfile } from "./components/NailProfile"
 import { Timeline } from "./components/Timeline"
+import { FinalResults } from "./components/FinalResults"
 
 interface InterludeProps {
   type: InterludeTypes
@@ -36,6 +37,10 @@ export const Interlude = ({ handleSubmit, type, answers }: InterludeProps) => {
         severity={answers.severity as number}
       />
     )
+  }
+
+  if (type === InterludeTypes.FinalResults) {
+    return <FinalResults handleSubmit={handleSubmit} />
   }
 
   return null

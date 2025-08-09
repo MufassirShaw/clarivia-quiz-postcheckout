@@ -1,0 +1,33 @@
+.consentContent {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  max-height: 400px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #374151;
+}
+
+.consentCheckbox {
+  margin-bottom: 24px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #374151;
+}
+
+.consentCheck {
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  accent-color: #009eda;
+  cursor: pointer;
+}
