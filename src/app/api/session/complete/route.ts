@@ -48,21 +48,35 @@ export async function POST() {
         }
       )
     }
+    const data = (await response.json()) as {
+      completed: boolean
+      checkout_url: string
+      message: string
+    }
 
-    const responseData = await response.text()
+    const { completed, checkout_url, message } = data
 
+    if (!completed) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: message || "something went wrong",
+        },
+        {
+          status: 502,
+        }
+      )
+    }
+
+    // Clear the session cookie
+    await clearLead()
     // Create response and clear the session cookie
-    const nextResponse = NextResponse.json(
-      { data: responseData },
+    return NextResponse.json(
+      { url: checkout_url },
       {
         status: response.status,
       }
     )
-
-    // Clear the session cookie
-    await clearLead()
-
-    return nextResponse
   } catch (error) {
     console.error("Error processing request:", error)
     return NextResponse.json(

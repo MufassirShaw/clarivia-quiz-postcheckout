@@ -533,7 +533,6 @@ const devQuestionMap: Record<string, number | null> = {
 }
 
 export const getDosableId = (id: string) => {
-  console.log({ prod: apiConfig.isProduction, id: prodQuestionMap[id] })
   if (apiConfig.isProduction) {
     return prodQuestionMap[id]
   }

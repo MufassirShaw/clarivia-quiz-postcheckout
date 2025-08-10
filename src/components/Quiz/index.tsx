@@ -120,14 +120,12 @@ export default function Quiz() {
         throw Error(response.statusText)
       }
 
-      const parsed = await response.json()
-      const { completed, checkout_url } = JSON.parse(parsed.data) as {
-        completed: boolean
-        checkout_url: string
+      const { url } = (await response.json()) as {
+        url: string
       }
 
-      if (completed && typeof window !== "undefined") {
-        window.location.assign(checkout_url)
+      if (typeof window !== "undefined") {
+        window.location.assign(url)
       }
     },
     [saveAnswers]
