@@ -31,11 +31,20 @@ export default function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, AnswerType>>({})
   const [hardStopModalOpen, setHardStopModalOpen] = useState(false)
+  const [leadInfo, setLeadInfo] = useState<Partial<ILead> | null>(null)
 
   const currentQuestion = quizData.questions[currentQuestionIndex]
 
   const saveAnswerToDosable = useCallback(
-    async ({ qid, answer }: { qid: number; answer: AnswerType }) => {
+    async ({
+      qid,
+      answer,
+      question,
+    }: {
+      qid: number
+      answer: AnswerType
+      question: string
+    }) => {
       const response = await fetch(`/api/questions/${qid}`, {
         method: "POST",
         headers: {
@@ -44,7 +53,7 @@ export default function Quiz() {
         body: JSON.stringify({
           [qid]: {
             value: answer,
-            question: currentQuestion.title,
+            question,
           },
         }),
       })
@@ -53,21 +62,92 @@ export default function Quiz() {
         throw Error(response.statusText)
       }
     },
-    [currentQuestion]
+    []
   )
 
-  const completeSession = useCallback(async () => {
-    const response = await fetch(`/api/session/complete`, {
-      method: "POST",
+  const transformAnswers = useCallback(
+    (quizAnswers: Record<string, AnswerType>) => {
+      let transformed: Record<string, { value: string; question: string }> = {}
+
+      Object.entries(quizAnswers).forEach(([key, value]) => {
+        const dosableQId = getDosableId(key)
+        const question = quizData.questions.find((q) => q.id === key)
+        if (dosableQId && question) {
+          transformed = {
+            ...transformed,
+            [dosableQId]: {
+              value,
+              question: question.title,
+            },
+          }
+        }
+      })
+      return transformed
+    },
+    []
+  )
+
+  const saveAnswers = useCallback(
+    async (quizAnswers: Record<string, AnswerType>) => {
+      const promises: Promise<void>[] = []
+      const transformedAnswers = transformAnswers(quizAnswers)
+      Object.keys(transformedAnswers).forEach((key) => {
+        const answer = transformedAnswers[key]
+        promises.push(
+          saveAnswerToDosable({
+            qid: Number(key),
+            answer: answer.value,
+            question: answer.question,
+          })
+        )
+      })
+      await Promise.all(promises)
+    },
+    [saveAnswerToDosable, transformAnswers]
+  )
+
+  const saveLeadInfo = useCallback(async () => {
+    const response = await fetch(`/api/leads`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(leadInfo),
     })
 
     if (!response.ok) {
       throw Error(response.statusText)
     }
-  }, [])
+  }, [leadInfo])
+
+  const completeSession = useCallback(
+    async (quizAnswers: Record<string, AnswerType>) => {
+      await saveLeadInfo()
+      await saveAnswers(quizAnswers)
+
+      const response = await fetch(`/api/session/complete`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (!response.ok) {
+        throw Error(response.statusText)
+      }
+
+      const parsed = await response.json()
+      const { completed, checkout_url } = JSON.parse(parsed.data) as {
+        completed: boolean
+        checkout_url: string
+      }
+
+      if (completed && typeof window !== "undefined") {
+        window.location.assign(checkout_url)
+      }
+    },
+    [saveLeadInfo, saveAnswers]
+  )
 
   const goToNextQuestion = useCallback(
     (currenAnswers: Record<string, AnswerType>, index: number) => {
@@ -97,14 +177,12 @@ export default function Quiz() {
       }
 
       try {
-        const dosableQId = getDosableId(currentQuestion.id)
-
-        if (dosableQId) {
-          await saveAnswerToDosable({ qid: dosableQId, answer })
-        }
-
-        if (currentQuestion.isLast && dosableQId) {
-          await completeSession()
+        if (currentQuestion.isLast) {
+          await completeSession({ ...answers, [currentQuestion.id]: answer })
+          setAnswers((prev) => ({
+            ...prev,
+            [currentQuestion.id]: answer,
+          }))
           return
         }
         setAnswers((prev) => {
@@ -122,29 +200,12 @@ export default function Quiz() {
         toast.error("Opps! Something went wrong")
       }
     },
-    [
-      currentQuestion,
-      goToNextQuestion,
-      currentQuestionIndex,
-      saveAnswerToDosable,
-      completeSession,
-    ]
+    [currentQuestion, goToNextQuestion, currentQuestionIndex, completeSession]
   )
 
   const updateLead = useCallback(
     async (lead: Partial<ILead>) => {
-      const response = await fetch(`/api/leads`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(lead),
-      })
-
-      if (!response.ok) {
-        throw Error(response.statusText)
-      }
-
+      setLeadInfo((prev) => (prev ? { ...prev, ...lead } : { ...lead }))
       goToNextQuestion(answers, currentQuestionIndex)
     },
     [answers, currentQuestionIndex, goToNextQuestion]

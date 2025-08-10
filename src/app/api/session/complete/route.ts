@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { apiConfig } from "@/config/api"
 import { clearLead, getLead } from "@/utils/lead"
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Get session_id from cookie
     const { sessionId } = await getLead()

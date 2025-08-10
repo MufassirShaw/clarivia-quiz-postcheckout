@@ -1,3 +1,4 @@
+import { apiConfig } from "@/config/api"
 import {
   AnswerType,
   ConsentType,
@@ -531,10 +532,9 @@ const devQuestionMap: Record<string, number | null> = {
   treatment_consent: 1300922,
 }
 
-const isProd = process.env.NODE_ENV === "production"
-
 export const getDosableId = (id: string) => {
-  if (isProd) {
+  console.log({ prod: apiConfig.isProduction, id: prodQuestionMap[id] })
+  if (apiConfig.isProduction) {
     return prodQuestionMap[id]
   }
   return devQuestionMap[id]

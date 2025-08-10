@@ -60,7 +60,14 @@ export const BasicInfo = ({
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
-    await onAnswer(data)
+    const [day, month, year] = data.birthday
+      .split("/")
+      .map((num) => parseInt(num))
+
+    await onAnswer({
+      email: data.email,
+      birthday: `${month}/${day}/${year}`, //MM/DD/YYYY dosable format
+    })
     setIsSubmitting(false)
   }
 

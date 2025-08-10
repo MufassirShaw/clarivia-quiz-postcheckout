@@ -12,7 +12,7 @@ export async function POST(
 ) {
   try {
     const answer = await request.json()
-
+    const { questionId } = await params
     // Get session_id from cookie
     const { sessionId } = await getLead()
 
@@ -42,7 +42,7 @@ export async function POST(
     }
 
     // Extract data
-    const api_url = `${apiConfig.baseUrl}/questions/sessions/${sessionId}/questions/${params.questionId}`
+    const api_url = `${apiConfig.baseUrl}/questions/sessions/${sessionId}/questions/${questionId}`
 
     const response = await fetch(api_url, {
       method: "POST",
