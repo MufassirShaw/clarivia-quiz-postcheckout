@@ -6,12 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const answer = await request.json()
     const questionId = Object.keys(answer)[0]
-    // const { questionId } = await request.json()
-
-    // Get session_id from cookie
     const { sessionId } = await getLead()
-
-    // Validate required fields
     if (!sessionId) {
       return NextResponse.json(
         {
