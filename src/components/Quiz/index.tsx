@@ -106,25 +106,9 @@ export default function Quiz() {
     [saveAnswerToDosable, transformAnswers]
   )
 
-  const saveLeadInfo = useCallback(async () => {
-    const response = await fetch(`/api/leads`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(leadInfo),
-    })
-
-    if (!response.ok) {
-      throw Error(response.statusText)
-    }
-  }, [leadInfo])
-
   const completeSession = useCallback(
     async (quizAnswers: Record<string, AnswerType>) => {
-      await saveLeadInfo()
       await saveAnswers(quizAnswers)
-
       const response = await fetch(`/api/session/complete`, {
         method: "POST",
         headers: {
@@ -146,7 +130,7 @@ export default function Quiz() {
         window.location.assign(checkout_url)
       }
     },
-    [saveLeadInfo, saveAnswers]
+    [saveAnswers]
   )
 
   const goToNextQuestion = useCallback(
@@ -200,7 +184,49 @@ export default function Quiz() {
         toast.error("Opps! Something went wrong")
       }
     },
-    [currentQuestion, goToNextQuestion, currentQuestionIndex, completeSession]
+    [
+      currentQuestion,
+      completeSession,
+      answers,
+      goToNextQuestion,
+      currentQuestionIndex,
+    ]
+  )
+  const saveLeadInfo = useCallback(
+    async (lead: Partial<ILead>) => {
+      const leadData = {
+        ...leadInfo,
+        ...lead,
+        gender: answers["sex_at_birth"],
+      }
+      try {
+        const response = await fetch(`/api/leads`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(leadData),
+        })
+
+        if (!response.ok) {
+          throw Error(response.statusText)
+        }
+        goToNextQuestion(answers, currentQuestionIndex)
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+        toast.error(
+          <>
+            <h3>Opps!</h3>
+            <p>
+              Something went wrong, please try a different email and/or phone
+              number
+            </p>
+          </>
+        )
+      }
+    },
+    [leadInfo, answers, goToNextQuestion, currentQuestionIndex]
   )
 
   const updateLead = useCallback(
@@ -314,14 +340,7 @@ export default function Quiz() {
         return <BasicInfo onAnswer={updateLead} key={currentQuestion.id} />
 
       case QuestionType.Personal_Info:
-        return (
-          <PersonalInfo
-            onAnswer={(d) =>
-              updateLead({ ...d, gender: answers["sex_at_birth"] as string })
-            }
-            key={currentQuestion.id}
-          />
-        )
+        return <PersonalInfo onAnswer={saveLeadInfo} key={currentQuestion.id} />
       case QuestionType.Consent:
         return (
           <Consent
@@ -339,6 +358,7 @@ export default function Quiz() {
     answers,
     handleAnswer,
     updateLead,
+    saveLeadInfo,
     goToNextQuestion,
     currentQuestionIndex,
   ])

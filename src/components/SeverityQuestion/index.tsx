@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import styles from "./SeverityQuestion.module.css"
 import { Loader } from "../Loader"

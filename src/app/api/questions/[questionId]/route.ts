@@ -2,17 +2,12 @@ import { NextRequest, NextResponse } from "next/server"
 import { apiConfig } from "@/config/api"
 import { getLead } from "@/utils/lead"
 
-interface IParams {
-  questionId: string
-}
-
-export async function POST(
-  request: NextRequest,
-  { params }: { params: IParams }
-) {
+export async function POST(request: NextRequest) {
   try {
     const answer = await request.json()
-    const { questionId } = await params
+    const questionId = Object.keys(answer)[0]
+    // const { questionId } = await request.json()
+
     // Get session_id from cookie
     const { sessionId } = await getLead()
 
@@ -29,7 +24,7 @@ export async function POST(
       )
     }
 
-    if (!answer) {
+    if (!questionId) {
       return NextResponse.json(
         {
           success: false,
