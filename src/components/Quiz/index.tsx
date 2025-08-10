@@ -45,7 +45,7 @@ export default function Quiz() {
       answer: AnswerType
       question: string
     }) => {
-      const response = await fetch(`/api/questions/${qid}`, {
+      const response = await fetch(`/api/questions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
