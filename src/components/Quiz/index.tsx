@@ -200,6 +200,7 @@ export default function Quiz() {
         ...lead,
         gender: answers["sex_at_birth"],
       }
+      setLeadInfo((prev) => (prev ? { ...prev, ...lead } : { ...lead }))
       try {
         const response = await fetch(`/api/leads`, {
           method: "PUT",
@@ -216,14 +217,14 @@ export default function Quiz() {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
+        const indexOfBasicInfo = quizData.questions.findIndex(
+          (q) => q.id === "basic_info"
+        )
+        if (indexOfBasicInfo) {
+          setCurrentQuestionIndex(indexOfBasicInfo)
+        }
         toast.error(
-          <>
-            <h3>Opps!</h3>
-            <p>
-              Something went wrong, please try a different email and/or phone
-              number
-            </p>
-          </>
+          "Something went wrong, please try a different email and/or phone number"
         )
       }
     },
@@ -338,10 +339,22 @@ export default function Quiz() {
           />
         )
       case QuestionType.Basic_Info:
-        return <BasicInfo onAnswer={updateLead} key={currentQuestion.id} />
+        return (
+          <BasicInfo
+            onAnswer={updateLead}
+            key={currentQuestion.id}
+            initState={leadInfo ?? {}}
+          />
+        )
 
       case QuestionType.Personal_Info:
-        return <PersonalInfo onAnswer={saveLeadInfo} key={currentQuestion.id} />
+        return (
+          <PersonalInfo
+            onAnswer={saveLeadInfo}
+            initState={leadInfo ?? {}}
+            key={currentQuestion.id}
+          />
+        )
       case QuestionType.Consent:
         return (
           <Consent
@@ -362,6 +375,7 @@ export default function Quiz() {
     saveLeadInfo,
     goToNextQuestion,
     currentQuestionIndex,
+    leadInfo,
   ])
 
   const progress = useMemo(() => {

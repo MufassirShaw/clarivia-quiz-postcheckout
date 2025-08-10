@@ -35,8 +35,10 @@ const ErrorMessage = ({ message }: { message?: string }) => (
 
 export const PersonalInfo = ({
   onAnswer,
+  initState,
 }: {
   onAnswer: (info: Partial<ILead>) => Promise<void>
+  initState: Partial<ILead>
 }) => {
   const {
     register,
@@ -45,6 +47,9 @@ export const PersonalInfo = ({
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange", // validates as user types
+    defaultValues: {
+      ...initState,
+    },
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 

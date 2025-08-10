@@ -7,13 +7,21 @@ import { useState } from "react"
 
 const today = new Date()
 
+const formDate = (date: string) => {
+  if (!date) {
+    return ""
+  }
+  const [day, month, year] = date.split("/")
+  return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year}`
+}
+
 // Birthday validation logic
 const birthdaySchema = z
   .string()
   .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Date must be in DD/MM/YYYY format")
   .refine((value) => {
     const [day, month, year] = value.split("/").map((num) => parseInt(num))
-    const birthDate = new Date(`${month - 1}/${day}/${year}`)
+    const birthDate = new Date(`${month}/${day}/${year}`)
 
     return !isNaN(birthDate.getTime()) // valid date
   }, "Please enter a valid date")
@@ -45,8 +53,10 @@ type FormData = z.infer<typeof schema>
 
 export const BasicInfo = ({
   onAnswer,
+  initState,
 }: {
   onAnswer: (info: Partial<ILead>) => Promise<void>
+  initState: Partial<ILead>
 }) => {
   const {
     register,
@@ -55,6 +65,10 @@ export const BasicInfo = ({
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange", // validates as user types
+    defaultValues: {
+      ...initState,
+      birthday: formDate(initState.birthday ?? ""),
+    },
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
