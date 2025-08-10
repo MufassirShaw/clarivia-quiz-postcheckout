@@ -26,13 +26,14 @@ import { Consent } from "../Consent"
 import { Modal } from "../Modal"
 import { toast } from "react-toastify"
 import { ILead } from "@/type/lead"
+import { FullScreenLoader } from "../FullScreenLoader"
 
 export default function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, AnswerType>>({})
   const [hardStopModalOpen, setHardStopModalOpen] = useState(false)
   const [leadInfo, setLeadInfo] = useState<Partial<ILead> | null>(null)
-
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const currentQuestion = quizData.questions[currentQuestionIndex]
 
   const saveAnswerToDosable = useCallback(
@@ -108,6 +109,7 @@ export default function Quiz() {
 
   const completeSession = useCallback(
     async (quizAnswers: Record<string, AnswerType>) => {
+      setIsSubmitting(true)
       await saveAnswers(quizAnswers)
       const response = await fetch(`/api/session/complete`, {
         method: "POST",
@@ -127,6 +129,7 @@ export default function Quiz() {
       if (typeof window !== "undefined") {
         window.location.assign(url)
       }
+      setIsSubmitting(false)
     },
     [saveAnswers]
   )
@@ -381,6 +384,9 @@ export default function Quiz() {
 
   return (
     <>
+      {isSubmitting && (
+        <FullScreenLoader text="Finalizing your data securely..." />
+      )}
       <ProgressBar progress={progress} />
       <div className={styles.quizMain}>
         <div className={styles.quizContent} key={currentQuestion?.id}>
