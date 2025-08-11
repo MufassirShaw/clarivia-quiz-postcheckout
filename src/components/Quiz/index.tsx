@@ -66,46 +66,21 @@ export default function Quiz() {
     []
   )
 
-  // const transformAnswers = useCallback(
-  //   (quizAnswers: Record<string, AnswerType>) => {
-  //     let transformed: Record<string, { value: string; question: string }> = {}
+  const encodeCheckoutUrl = useCallback((url: string) => {
+    const currentParams = new URLSearchParams(window.location.search)
 
-  //     Object.entries(quizAnswers).forEach(([key, value]) => {
-  //       const dosableQId = getDosableId(key)
-  //       const question = quizData.questions.find((q) => q.id === key)
-  //       if (dosableQId && question) {
-  //         transformed = {
-  //           ...transformed,
-  //           [dosableQId]: {
-  //             value,
-  //             question: question.title,
-  //           },
-  //         }
-  //       }
-  //     })
-  //     return transformed
-  //   },
-  //   []
-  // )
+    // Create URL object for the checkout URL
+    const checkoutURL = new URL(url)
 
-  // const saveAnswers = useCallback(
-  //   async (quizAnswers: Record<string, AnswerType>) => {
-  //     const promises: Promise<void>[] = []
-  //     const transformedAnswers = transformAnswers(quizAnswers)
-  //     Object.keys(transformedAnswers).forEach((key) => {
-  //       const answer = transformedAnswers[key]
-  //       promises.push(
-  //         saveAnswerToDosable({
-  //           qid: Number(key),
-  //           answer: answer.value,
-  //           question: answer.question,
-  //         })
-  //       )
-  //     })
-  //     await Promise.all(promises)
-  //   },
-  //   [saveAnswerToDosable, transformAnswers]
-  // )
+    // Append each parameter from current page to checkout URL
+    currentParams.forEach((value, key) => {
+      checkoutURL.searchParams.append(key, value)
+    })
+    // Redirect with all parameters
+    const encodedCheckoutURL = encodeURIComponent(checkoutURL.toString())
+
+    return "https://getclarivia.com/dosage/?ds_link=" + encodedCheckoutURL
+  }, [])
 
   const completeSession = useCallback(async () => {
     // await saveAnswers(quizAnswers)
@@ -124,10 +99,14 @@ export default function Quiz() {
       url: string
     }
 
-    if (typeof window !== "undefined") {
-      window.location.assign(url)
-    }
-  }, [])
+    const finalUrl = encodeCheckoutUrl(url)
+    console.log({
+      initialUrl: url,
+      finalUrl,
+    })
+
+    window.location.assign(finalUrl)
+  }, [encodeCheckoutUrl])
 
   const goToNextQuestion = useCallback(
     (currenAnswers: Record<string, AnswerType>, index: number) => {
