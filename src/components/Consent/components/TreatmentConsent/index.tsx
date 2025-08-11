@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import styles from "./treatmentConsent.module.css"
 
 const consent =
@@ -11,12 +11,20 @@ export const TreatmentConsent = ({
 }) => {
   const [hasRead, setHasRead] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-
+  const containerRef = useRef<HTMLButtonElement>(null)
   const handleAccept = async () => {
     setIsSubmitting(true)
     await handleSubmit(consent)
     setIsSubmitting(false)
   }
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({
+        behavior: "smooth",
+      })
+    }
+  }, [])
+
   return (
     <>
       <div className={styles.consentContent}>
@@ -208,6 +216,7 @@ export const TreatmentConsent = ({
           className="primary-button"
           disabled={!hasRead || isSubmitting}
           onClick={handleAccept}
+          ref={containerRef}
         >
           I Agree & Continue
         </button>

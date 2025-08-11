@@ -15,6 +15,27 @@ const formDate = (date: string) => {
   return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year}`
 }
 
+// Birthday formatting function
+const formatBirthday = (value: string) => {
+  // Remove all non-digits
+  const digits = value.replace(/\D/g, "")
+
+  // Limit to 8 digits (DDMMYYYY)
+  const limitedDigits = digits.slice(0, 8)
+
+  // Format based on length
+  if (limitedDigits.length <= 2) {
+    return limitedDigits
+  } else if (limitedDigits.length <= 4) {
+    return `${limitedDigits.slice(0, 2)}/${limitedDigits.slice(2)}`
+  } else {
+    return `${limitedDigits.slice(0, 2)}/${limitedDigits.slice(
+      2,
+      4
+    )}/${limitedDigits.slice(4)}`
+  }
+}
+
 // Birthday validation logic
 const birthdaySchema = z
   .string()
@@ -61,6 +82,8 @@ export const BasicInfo = ({
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors, isValid, touchedFields },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -71,6 +94,13 @@ export const BasicInfo = ({
     },
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const birthdayValue = watch("birthday")
+
+  const handleBirthdayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatBirthday(e.target.value)
+    setValue("birthday", formatted, { shouldValidate: true, shouldTouch: true })
+  }
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
@@ -94,6 +124,8 @@ export const BasicInfo = ({
         </label>
         <input
           {...register("birthday")}
+          onChange={handleBirthdayChange}
+          value={birthdayValue || ""}
           className={`${styles.input} ${
             !!errors.birthday?.message && styles.invalidInput
           } ${
@@ -130,7 +162,11 @@ export const BasicInfo = ({
       </div>
 
       <div className="button-container">
-        <button className="primary-button" type="submit" disabled={!isValid}>
+        <button
+          className="primary-button"
+          type="submit"
+          disabled={!isValid || isSubmitting}
+        >
           {isSubmitting ? "Submitting..." : "Continue"}
         </button>
       </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import styles from "./MultipleChoiceQuestion.module.css"
 
 interface MultipleChoiceOption {
@@ -30,7 +30,7 @@ export default function MultipleChoiceQuestion({
     currentAnswer || []
   )
   const [isSubmitting, setIsSubmitting] = useState(false)
-
+  const containerRef = useRef<HTMLButtonElement>(null)
   const handleOptionToggle = (option: MultipleChoiceOption) => {
     const newSelectedOptions = selectedOptions.includes(option.value)
       ? selectedOptions.filter((value) => value !== option.value)
@@ -51,6 +51,14 @@ export default function MultipleChoiceQuestion({
     await onAnswer(selected)
     setIsSubmitting(false)
   }
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({
+        behavior: "smooth",
+      })
+    }
+  }, [])
 
   return (
     <div className={styles.optionsList}>
@@ -80,6 +88,7 @@ export default function MultipleChoiceQuestion({
           className="primary-button"
           onClick={handleSubmit}
           disabled={!selectedOptions?.length || isSubmitting}
+          ref={containerRef}
         >
           {isSubmitting ? "Submitting..." : "Continue"}
         </button>

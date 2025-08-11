@@ -3,7 +3,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import styles from "./personalInfo.module.css"
 import { ILead } from "@/type/lead"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 
 // Validation schema
 const schema = z.object({
@@ -33,6 +33,27 @@ const ErrorMessage = ({ message }: { message?: string }) => (
   </p>
 )
 
+// Phone number formatting function
+const formatPhoneNumber = (value: string) => {
+  // Remove all non-digits
+  const digits = value.replace(/\D/g, "")
+
+  // Limit to 10 digits
+  const limitedDigits = digits.slice(0, 10)
+
+  // Format based on length
+  if (limitedDigits.length <= 3) {
+    return limitedDigits.length > 0 ? `(${limitedDigits}` : ""
+  } else if (limitedDigits.length <= 6) {
+    return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(3)}`
+  } else {
+    return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(
+      3,
+      6
+    )}-${limitedDigits.slice(6)}`
+  }
+}
+
 export const PersonalInfo = ({
   onAnswer,
   initState,
@@ -43,15 +64,25 @@ export const PersonalInfo = ({
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors, isValid, touchedFields },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    mode: "onChange", // validates as user types
+    mode: "onChange",
     defaultValues: {
       ...initState,
     },
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const containerRef = useRef<HTMLButtonElement>(null)
+
+  const phoneValue = watch("phone")
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value)
+    setValue("phone", formatted, { shouldValidate: true, shouldTouch: true })
+  }
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
@@ -63,9 +94,17 @@ export const PersonalInfo = ({
     setIsSubmitting(false)
   }
 
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({
+        behavior: "smooth",
+      })
+    }
+  }, [])
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.formFields}>
-      {/* Birthday Field */}
+      {/* First Name Field */}
       <div className={styles.formField}>
         <label htmlFor="firstName" className={styles.fieldLabel}>
           First Name
@@ -85,7 +124,7 @@ export const PersonalInfo = ({
         <ErrorMessage message={errors.firstName?.message} />
       </div>
 
-      {/* Email Field */}
+      {/* Last Name Field */}
       <div className={styles.formField}>
         <label htmlFor="lastName" className={styles.fieldLabel}>
           Last Name
@@ -106,11 +145,13 @@ export const PersonalInfo = ({
       </div>
 
       <div className={styles.formField}>
-        <label htmlFor="" className={styles.fieldLabel}>
+        <label htmlFor="phone" className={styles.fieldLabel}>
           Phone Number
         </label>
         <input
           {...register("phone")}
+          onChange={handlePhoneChange}
+          value={phoneValue || ""}
           className={`${styles.input} ${
             !!errors.phone?.message && styles.invalidInput
           } ${
@@ -127,6 +168,7 @@ export const PersonalInfo = ({
           className="primary-button"
           type="submit"
           disabled={!isValid || isSubmitting}
+          ref={containerRef}
         >
           {isSubmitting ? "Submitting..." : "Continue"}
         </button>

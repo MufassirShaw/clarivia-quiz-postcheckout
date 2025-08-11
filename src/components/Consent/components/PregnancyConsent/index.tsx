@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import styles from "./pregnancyConsent.module.css"
 
 interface PregnancyConsentProps {
@@ -11,12 +11,20 @@ const consent =
 export const PregnancyConsent = ({ handleSubmit }: PregnancyConsentProps) => {
   const [hasRead, setHasRead] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-
+  const containerRef = useRef<HTMLButtonElement>(null)
   const handleAccept = async () => {
     setIsSubmitting(true)
     await handleSubmit(consent)
     setIsSubmitting(true)
   }
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({
+        behavior: "smooth",
+      })
+    }
+  }, [])
 
   return (
     <>
@@ -48,6 +56,7 @@ export const PregnancyConsent = ({ handleSubmit }: PregnancyConsentProps) => {
           className="primary-button"
           disabled={!hasRead || isSubmitting}
           onClick={handleAccept}
+          ref={containerRef}
         >
           I Agree & Continue
         </button>

@@ -1,6 +1,6 @@
 .severityOptions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
   gap: 20px;
   margin-bottom: 32px;
 }
@@ -63,8 +63,9 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .severityOptions {
-    grid-template-columns: 1fr;
+  .severityImage {
+    width: 100%;
+    height: 100px;
   }
 
   .questionTitle {
