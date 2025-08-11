@@ -109,7 +109,6 @@ export default function Quiz() {
 
   const completeSession = useCallback(
     async (quizAnswers: Record<string, AnswerType>) => {
-      setIsSubmitting(true)
       await saveAnswers(quizAnswers)
       const response = await fetch(`/api/session/complete`, {
         method: "POST",
@@ -129,7 +128,6 @@ export default function Quiz() {
       if (typeof window !== "undefined") {
         window.location.assign(url)
       }
-      setIsSubmitting(false)
     },
     [saveAnswers]
   )
@@ -163,6 +161,7 @@ export default function Quiz() {
 
       try {
         if (currentQuestion.isLast) {
+          setIsSubmitting(true)
           await completeSession({ ...answers, [currentQuestion.id]: answer })
           setAnswers((prev) => ({
             ...prev,
@@ -183,6 +182,8 @@ export default function Quiz() {
       } catch (error) {
         console.log(error)
         toast.error("Opps! Something went wrong")
+      } finally {
+        setIsSubmitting(false)
       }
     },
     [

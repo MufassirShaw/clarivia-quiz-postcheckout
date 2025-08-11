@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { apiConfig } from "@/config/api"
 import { clearLead, getLead } from "@/utils/lead"
+import * as Sentry from "@sentry/nextjs"
 
 export async function POST() {
   try {
@@ -9,14 +10,11 @@ export async function POST() {
 
     // Validate session exists
     if (!sessionId) {
+      const err = new Error("Session not found. Please start a new session.")
+      Sentry.captureException(err)
       return NextResponse.json(
-        {
-          success: false,
-          message: "Session not found. Please start a new session.",
-        },
-        {
-          status: 401,
-        }
+        { success: false, message: err.message },
+        { status: 401 }
       )
     }
 
@@ -38,16 +36,21 @@ export async function POST() {
     })
 
     if (!response.ok) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Something went wrong.",
-        },
-        {
+      const err = new Error(`External API error: ${response.statusText}`)
+      Sentry.captureException(err, {
+        extra: {
           status: response.status,
-        }
+          url: api_url,
+          body,
+          response,
+        },
+      })
+      return NextResponse.json(
+        { success: false, message: "Something went wrong." },
+        { status: response.status }
       )
     }
+
     const data = (await response.json()) as {
       completed: boolean
       checkout_url: string
@@ -57,39 +60,28 @@ export async function POST() {
     const { completed, checkout_url, message } = data
 
     if (!completed) {
+      const err = new Error(message || "Session completion failed.")
+      Sentry.captureException(err, { extra: { sessionId, data } })
       return NextResponse.json(
-        {
-          success: false,
-          message: message || "something went wrong",
-        },
-        {
-          status: 502,
-        }
+        { success: false, message: message || "Something went wrong" },
+        { status: 502 }
       )
     }
 
     // Clear the session cookie
     await clearLead()
-    // Create response and clear the session cookie
-    return NextResponse.json(
-      { url: checkout_url },
-      {
-        status: response.status,
-      }
-    )
+
+    return NextResponse.json({ url: checkout_url }, { status: 200 })
   } catch (error) {
     console.error("Error processing request:", error)
+    Sentry.captureException(error)
     return NextResponse.json(
       { error: "Internal Server Error" },
-      {
-        status: 500,
-      }
+      { status: 500 }
     )
   }
 }
 
 export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 204,
-  })
+  return new NextResponse(null, { status: 204 })
 }

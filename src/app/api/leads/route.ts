@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { apiConfig } from "@/config/api"
 import { getLead, setLead } from "@/utils/lead"
 import { ILead } from "@/type/lead"
+import * as Sentry from "@sentry/nextjs"
 
 const leadApiUrl = `${apiConfig.baseUrl}/leads/`
 
@@ -10,6 +11,7 @@ export async function POST() {
     const payload = {
       tenant_id: apiConfig.tenantId,
     }
+
     const res = await fetch(leadApiUrl, {
       method: "POST",
       headers: {
@@ -20,12 +22,10 @@ export async function POST() {
     })
 
     if (!res.ok) {
-      console.log({
-        status: res.status,
-        reason: res.statusText,
-        payload,
+      const err = new Error(`Failed to create lead: ${res.statusText}`)
+      Sentry.captureException(err, {
+        extra: { status: res.status, payload, url: leadApiUrl },
       })
-
       return NextResponse.json(
         { error: "Failed to create lead", reason: res.statusText },
         { status: 502 }
@@ -35,14 +35,10 @@ export async function POST() {
     const data = (await res.json()) as ILead
 
     await setLead(data)
-    return NextResponse.json(
-      {
-        data,
-      },
-      { status: res.status }
-    )
+    return NextResponse.json({ data }, { status: res.status })
   } catch (error) {
     console.error("Error processing request:", error)
+    Sentry.captureException(error)
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
@@ -56,14 +52,11 @@ export async function PUT(request: NextRequest) {
 
     const { leadId } = await getLead()
     if (!leadId) {
+      const err = new Error("lead_id is required and must be a valid integer.")
+      Sentry.captureException(err)
       return NextResponse.json(
-        {
-          success: false,
-          message: "lead_id is required and must be a valid integer.",
-        },
-        {
-          status: 400,
-        }
+        { success: false, message: err.message },
+        { status: 400 }
       )
     }
 
@@ -78,21 +71,25 @@ export async function PUT(request: NextRequest) {
       body: JSON.stringify(data),
     })
 
+    if (!response.ok) {
+      const err = new Error(`Failed to update lead: ${response.statusText}`)
+      Sentry.captureException(err, {
+        extra: { status: response.status, url: api_url, body: data },
+      })
+    }
+
     const responseData = await response.json()
 
     return NextResponse.json(
       { data: responseData },
-      {
-        status: response.status,
-      }
+      { status: response.status }
     )
   } catch (error) {
     console.error("Error processing request:", error)
+    Sentry.captureException(error)
     return NextResponse.json(
       { error: "Internal Server Error" },
-      {
-        status: 500,
-      }
+      { status: 500 }
     )
   }
 }

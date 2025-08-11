@@ -72,6 +72,7 @@ export const PersonalInfo = ({
     mode: "onChange",
     defaultValues: {
       ...initState,
+      phone: formatPhoneNumber(initState?.phone ?? ""),
     },
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
