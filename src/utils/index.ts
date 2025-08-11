@@ -131,8 +131,6 @@ export const quizData = {
       placeholder: "Describe your symptoms...",
       required: true,
       label: "Please describe your nail symptoms",
-      resolver: (answers: Record<string, AnswerType>) =>
-        answers["nail_concerns"] === "Other nail symptom",
     },
     // Question 4: Affected Nails
     {
@@ -241,6 +239,8 @@ export const quizData = {
       required: false,
       label: "Additional details (optional)",
       placeholder: "Share any other symptoms or leave blank",
+      resolver: (answers: Record<string, AnswerType>) =>
+        answers["nail_concerns"] === "Other nail symptom",
     },
     // Marketing Page 2: Lifestyle Promise
     {
