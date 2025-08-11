@@ -66,71 +66,68 @@ export default function Quiz() {
     []
   )
 
-  const transformAnswers = useCallback(
-    (quizAnswers: Record<string, AnswerType>) => {
-      let transformed: Record<string, { value: string; question: string }> = {}
+  // const transformAnswers = useCallback(
+  //   (quizAnswers: Record<string, AnswerType>) => {
+  //     let transformed: Record<string, { value: string; question: string }> = {}
 
-      Object.entries(quizAnswers).forEach(([key, value]) => {
-        const dosableQId = getDosableId(key)
-        const question = quizData.questions.find((q) => q.id === key)
-        if (dosableQId && question) {
-          transformed = {
-            ...transformed,
-            [dosableQId]: {
-              value,
-              question: question.title,
-            },
-          }
-        }
-      })
-      return transformed
-    },
-    []
-  )
+  //     Object.entries(quizAnswers).forEach(([key, value]) => {
+  //       const dosableQId = getDosableId(key)
+  //       const question = quizData.questions.find((q) => q.id === key)
+  //       if (dosableQId && question) {
+  //         transformed = {
+  //           ...transformed,
+  //           [dosableQId]: {
+  //             value,
+  //             question: question.title,
+  //           },
+  //         }
+  //       }
+  //     })
+  //     return transformed
+  //   },
+  //   []
+  // )
 
-  const saveAnswers = useCallback(
-    async (quizAnswers: Record<string, AnswerType>) => {
-      const promises: Promise<void>[] = []
-      const transformedAnswers = transformAnswers(quizAnswers)
-      Object.keys(transformedAnswers).forEach((key) => {
-        const answer = transformedAnswers[key]
-        promises.push(
-          saveAnswerToDosable({
-            qid: Number(key),
-            answer: answer.value,
-            question: answer.question,
-          })
-        )
-      })
-      await Promise.all(promises)
-    },
-    [saveAnswerToDosable, transformAnswers]
-  )
+  // const saveAnswers = useCallback(
+  //   async (quizAnswers: Record<string, AnswerType>) => {
+  //     const promises: Promise<void>[] = []
+  //     const transformedAnswers = transformAnswers(quizAnswers)
+  //     Object.keys(transformedAnswers).forEach((key) => {
+  //       const answer = transformedAnswers[key]
+  //       promises.push(
+  //         saveAnswerToDosable({
+  //           qid: Number(key),
+  //           answer: answer.value,
+  //           question: answer.question,
+  //         })
+  //       )
+  //     })
+  //     await Promise.all(promises)
+  //   },
+  //   [saveAnswerToDosable, transformAnswers]
+  // )
 
-  const completeSession = useCallback(
-    async (quizAnswers: Record<string, AnswerType>) => {
-      await saveAnswers(quizAnswers)
-      const response = await fetch(`/api/session/complete`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+  const completeSession = useCallback(async () => {
+    // await saveAnswers(quizAnswers)
+    const response = await fetch(`/api/session/complete`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
 
-      if (!response.ok) {
-        throw Error(response.statusText)
-      }
+    if (!response.ok) {
+      throw Error(response.statusText)
+    }
 
-      const { url } = (await response.json()) as {
-        url: string
-      }
+    const { url } = (await response.json()) as {
+      url: string
+    }
 
-      if (typeof window !== "undefined") {
-        window.location.assign(url)
-      }
-    },
-    [saveAnswers]
-  )
+    if (typeof window !== "undefined") {
+      window.location.assign(url)
+    }
+  }, [])
 
   const goToNextQuestion = useCallback(
     (currenAnswers: Record<string, AnswerType>, index: number) => {
@@ -160,23 +157,28 @@ export default function Quiz() {
       }
 
       try {
+        const dosableQId = getDosableId(currentQuestion.id)
+
+        if (dosableQId) {
+          await saveAnswerToDosable({
+            qid: dosableQId,
+            question: currentQuestion.title ?? "",
+            answer,
+          })
+        }
+
         if (currentQuestion.isLast) {
           setIsSubmitting(true)
-          await completeSession({ ...answers, [currentQuestion.id]: answer })
-          setAnswers((prev) => ({
-            ...prev,
-            [currentQuestion.id]: answer,
-          }))
+          await completeSession()
           return
         }
+
         setAnswers((prev) => {
           const newAnswers = {
             ...prev,
             [currentQuestion.id]: answer,
           }
-          setTimeout(() => {
-            goToNextQuestion(newAnswers, currentQuestionIndex)
-          }, 500)
+          goToNextQuestion(newAnswers, currentQuestionIndex)
           return newAnswers
         })
       } catch (error) {
@@ -188,8 +190,8 @@ export default function Quiz() {
     },
     [
       currentQuestion,
+      saveAnswerToDosable,
       completeSession,
-      answers,
       goToNextQuestion,
       currentQuestionIndex,
     ]
