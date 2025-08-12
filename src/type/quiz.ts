@@ -13,6 +13,7 @@ export enum QuestionType {
   Consent = "consent",
   Basic_Info = "basic_info", // birth date & email
   Personal_Info = "personal_info", // firstname, lastname & phone
+  Med_Selection = "med_selection",
 }
 
 export enum InterludeTypes {

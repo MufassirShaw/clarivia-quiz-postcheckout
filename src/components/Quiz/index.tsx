@@ -27,6 +27,7 @@ import { Modal } from "../Modal"
 import { toast } from "react-toastify"
 import { ILead } from "@/type/lead"
 import { FullScreenLoader } from "../FullScreenLoader"
+import { MedSelection } from "../MedSelection"
 
 export default function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -34,6 +35,7 @@ export default function Quiz() {
   const [hardStopModalOpen, setHardStopModalOpen] = useState(false)
   const [leadInfo, setLeadInfo] = useState<Partial<ILead> | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [selectedMed, setSelectedMed] = useState("")
   const currentQuestion = quizData.questions[currentQuestionIndex]
 
   const saveAnswerToDosable = useCallback(
@@ -82,31 +84,33 @@ export default function Quiz() {
     return "https://getclarivia.com/dosage/?ds_link=" + encodedCheckoutURL
   }, [])
 
-  const completeSession = useCallback(async () => {
-    // await saveAnswers(quizAnswers)
-    const response = await fetch(`/api/session/complete`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+  const completeSession = useCallback(
+    async (med: string) => {
+      // await saveAnswers(quizAnswers)
+      const response = await fetch(`/api/session/complete`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          med,
+        }),
+      })
 
-    if (!response.ok) {
-      throw Error(response.statusText)
-    }
+      if (!response.ok) {
+        throw Error(response.statusText)
+      }
 
-    const { url } = (await response.json()) as {
-      url: string
-    }
+      const { url } = (await response.json()) as {
+        url: string
+      }
 
-    const finalUrl = encodeCheckoutUrl(url)
-    console.log({
-      initialUrl: url,
-      finalUrl,
-    })
+      const finalUrl = encodeCheckoutUrl(url)
 
-    window.location.assign(finalUrl)
-  }, [encodeCheckoutUrl])
+      window.location.assign(finalUrl)
+    },
+    [encodeCheckoutUrl]
+  )
 
   const goToNextQuestion = useCallback(
     (currenAnswers: Record<string, AnswerType>, index: number) => {
@@ -148,7 +152,7 @@ export default function Quiz() {
 
         if (currentQuestion.isLast) {
           setIsSubmitting(true)
-          await completeSession()
+          await completeSession(answer as string)
           return
         }
 
@@ -345,6 +349,16 @@ export default function Quiz() {
             key={currentQuestion.id}
           />
         )
+
+      case QuestionType.Med_Selection:
+        return (
+          <MedSelection
+            onAnswer={(med) => {
+              setSelectedMed(med)
+              handleAnswer(med)
+            }}
+          />
+        )
       default:
         return <div>Unknown question type: {currentQuestion.type}</div>
     }
@@ -389,14 +403,18 @@ export default function Quiz() {
           <div
             className={styles.questionWrapper}
             style={{
-              backgroundColor:
-                currentQuestion?.type === QuestionType.Interlude
-                  ? "transparent"
-                  : "white",
-              boxShadow:
-                currentQuestion?.type === QuestionType.Interlude
-                  ? "none"
-                  : "0 1px 3px rgba(0, 0, 0, 0.1)",
+              backgroundColor: [
+                QuestionType.Interlude,
+                QuestionType.Med_Selection,
+              ].includes(currentQuestion?.type)
+                ? "transparent"
+                : "white",
+              boxShadow: [
+                QuestionType.Interlude,
+                QuestionType.Med_Selection,
+              ].includes(currentQuestion?.type)
+                ? "none"
+                : "0 1px 3px rgba(0, 0, 0, 0.1)",
             }}
           >
             <div className={styles.questionHeader}>
