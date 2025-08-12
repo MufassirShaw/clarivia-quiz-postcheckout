@@ -1,0 +1,159 @@
+/* components/Header/Header.module.css */
+
+.header {
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Top contact bar */
+.topBar {
+  background-color: #000;
+  color: #fff;
+  padding: 8px 0;
+  font-size: 13px;
+  text-align: center;
+}
+
+.topBar .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.contactInfo {
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+/* Main header */
+.mainHeader {
+  background-color: #f8f9fa;
+  padding: 15px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo {
+  flex-shrink: 0;
+}
+
+.logo a {
+  display: block;
+  transition: opacity 0.2s ease;
+}
+
+.logo a:hover {
+  opacity: 0.8;
+}
+
+/* Navigation */
+.navigation {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.navList {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 40px;
+}
+
+.navItem {
+  position: relative;
+}
+
+.navLink {
+  color: #333;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding: 10px 0;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.navLink:hover {
+  color: #007bff;
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 5px;
+  left: 0;
+  background-color: #007bff;
+  transition: width 0.3s ease;
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+/* User section */
+.userSection {
+  flex-shrink: 0;
+  width: 160px; /* Same as logo width for balance */
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .headerContent {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .navigation {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .navList {
+    gap: 30px;
+  }
+
+  .userSection {
+    width: auto;
+    justify-content: center;
+  }
+
+  .topBar {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .navList {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .container {
+    padding: 0 15px;
+  }
+
+  .mainHeader {
+    padding: 10px 0;
+  }
+}

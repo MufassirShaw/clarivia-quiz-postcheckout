@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     const api_url = `${apiConfig.baseUrl}/sessions/${sessionId}/complete`
 
     const body = {
-      med: [med],
+      // med: [med],
       couponCode: null,
       session_id: sessionId,
     }

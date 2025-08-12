@@ -471,12 +471,13 @@ export const quizData = {
       type: QuestionType.Consent,
       title: "Consent (Nail Fungus Treatment)",
       consentType: ConsentType.TreatmentConsent,
-    },
-    {
-      id: "med_selection",
-      type: QuestionType.Med_Selection,
       isLast: true,
     },
+    // {
+    //   id: "med_selection",
+    //   type: QuestionType.Med_Selection,
+    //   isLast: true,
+    // },
   ],
 }
 
