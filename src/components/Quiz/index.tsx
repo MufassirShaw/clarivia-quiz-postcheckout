@@ -26,17 +26,16 @@ import { Consent } from "../Consent"
 import { Modal } from "../Modal"
 import { toast } from "react-toastify"
 import { ILead } from "@/type/lead"
-import { FullScreenLoader } from "../FullScreenLoader"
-import { MedSelection } from "../MedSelection"
+import { useRouter } from "next/navigation"
 
 export default function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, AnswerType>>({})
   const [hardStopModalOpen, setHardStopModalOpen] = useState(false)
   const [leadInfo, setLeadInfo] = useState<Partial<ILead> | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selectedMed, setSelectedMed] = useState("")
+  // const [isSubmitting, setIsSubmitting] = useState(false)
   const currentQuestion = quizData.questions[currentQuestionIndex]
+  const router = useRouter()
 
   const saveAnswerToDosable = useCallback(
     async ({
@@ -66,50 +65,6 @@ export default function Quiz() {
       }
     },
     []
-  )
-
-  const encodeCheckoutUrl = useCallback((url: string) => {
-    const currentParams = new URLSearchParams(window.location.search)
-
-    // Create URL object for the checkout URL
-    const checkoutURL = new URL(url)
-
-    // Append each parameter from current page to checkout URL
-    currentParams.forEach((value, key) => {
-      checkoutURL.searchParams.append(key, value)
-    })
-    // Redirect with all parameters
-    const encodedCheckoutURL = encodeURIComponent(checkoutURL.toString())
-
-    return "https://getclarivia.com/dosage/?ds_link=" + encodedCheckoutURL
-  }, [])
-
-  const completeSession = useCallback(
-    async (med: string) => {
-      // await saveAnswers(quizAnswers)
-      const response = await fetch(`/api/session/complete`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          med,
-        }),
-      })
-
-      if (!response.ok) {
-        throw Error(response.statusText)
-      }
-
-      const { url } = (await response.json()) as {
-        url: string
-      }
-
-      const finalUrl = encodeCheckoutUrl(url)
-
-      window.location.assign(finalUrl)
-    },
-    [encodeCheckoutUrl]
   )
 
   const goToNextQuestion = useCallback(
@@ -151,8 +106,7 @@ export default function Quiz() {
         }
 
         if (currentQuestion.isLast) {
-          setIsSubmitting(true)
-          await completeSession(answer as string)
+          router.push("/dosage")
           return
         }
 
@@ -167,16 +121,14 @@ export default function Quiz() {
       } catch (error) {
         console.log(error)
         toast.error("Opps! Something went wrong")
-      } finally {
-        setIsSubmitting(false)
       }
     },
     [
       currentQuestion,
       saveAnswerToDosable,
-      completeSession,
       goToNextQuestion,
       currentQuestionIndex,
+      router,
     ]
   )
   const saveLeadInfo = useCallback(
@@ -349,16 +301,6 @@ export default function Quiz() {
             key={currentQuestion.id}
           />
         )
-
-      case QuestionType.Med_Selection:
-        return (
-          <MedSelection
-            onAnswer={(med) => {
-              setSelectedMed(med)
-              handleAnswer(med)
-            }}
-          />
-        )
       default:
         return <div>Unknown question type: {currentQuestion.type}</div>
     }
@@ -394,9 +336,6 @@ export default function Quiz() {
 
   return (
     <>
-      {isSubmitting && (
-        <FullScreenLoader text="Finalizing your data securely..." />
-      )}
       <ProgressBar progress={progress} />
       <div className={styles.quizMain}>
         <div className={styles.quizContent} key={currentQuestion?.id}>

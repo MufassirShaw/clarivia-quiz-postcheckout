@@ -1,9 +1,11 @@
 // components/BottleOptions.tsx
 "use client"
 
-import React from "react"
+import React, { useCallback, useState } from "react"
 import Image from "next/image"
 import styles from "./medSelection.module.css"
+import { toast } from "react-toastify"
+import { Loader } from "@/components/Loader"
 
 interface BottleOption {
   id: string
@@ -69,9 +71,40 @@ const options: BottleOption[] = [
 ]
 
 export const MedSelection = () => {
-  const handleBuyClick = (productId: string) => {
-    // TODO, redirect to check out page
-  }
+  const [selectedMed, setSelectedMed] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const completeSession = useCallback(async (med: string) => {
+    try {
+      setIsSubmitting(true)
+      setSelectedMed(med)
+
+      const response = await fetch(`/api/session/complete`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          med,
+        }),
+      })
+
+      if (!response.ok) {
+        throw Error(response.statusText)
+      }
+
+      const { url } = (await response.json()) as {
+        url: string
+      }
+
+      window.location.assign(url)
+    } catch (error) {
+      toast.error("Something went wrong, try again!")
+      console.log("something went wrong", error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }, [])
 
   return (
     <div className={`${styles.mainContainer}`} id="bottle-options">
@@ -107,8 +140,6 @@ export const MedSelection = () => {
                     height={275}
                     className={styles.productImage}
                     priority={option.isBestValue} // Priority load for best value
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAQIAAxEhkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                   />
                 </div>
 
@@ -128,14 +159,19 @@ export const MedSelection = () => {
                 )}
 
                 <button
-                  onClick={() => handleBuyClick(option.id)}
+                  onClick={() => completeSession(option.id)}
                   className={styles.buyButton}
                   type="button"
                   aria-label={`Buy ${option.title} for $${
                     option.totalPrice || option.price
                   }`}
+                  disabled={isSubmitting}
                 >
-                  BUY NOW
+                  {isSubmitting && selectedMed === option.id ? (
+                    <Loader />
+                  ) : (
+                    "BUY NOW"
+                  )}
                 </button>
 
                 <div className={styles.features}>

@@ -13,10 +13,9 @@ import {
   WhyUs,
   MedSelection,
   Faqs,
+  Footer,
 } from "./components"
-
 import "./dosage.css"
-import Footer from "./components/Footer"
 
 const Home: React.FC = () => {
   return (
