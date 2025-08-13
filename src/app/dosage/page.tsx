@@ -8,6 +8,8 @@ import {
   TrustedBy,
   HowItWorks,
   Testimonials,
+  MedicationWork,
+  PoweredBy,
 } from "./components"
 
 import "./dosage.css"
@@ -40,6 +42,8 @@ const Home: React.FC = () => {
         <Featured />
         <HowItWorks />
         <Testimonials />
+        <MedicationWork />
+        <PoweredBy />
       </main>
     </>
   )

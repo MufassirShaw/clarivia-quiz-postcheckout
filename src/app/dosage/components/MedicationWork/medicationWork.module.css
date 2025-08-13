@@ -1,0 +1,21 @@
+.mainContainer {
+  background-color: #012455;
+  border-radius: 10px;
+  padding: 40px 70px !important;
+  margin: 40px auto !important;
+  display: flex;
+  gap: 4rem;
+}
+.textContent {
+  color: white;
+  h3 {
+    margin-top: 20px;
+    font-size: 60px;
+    font-weight: 600;
+    color: #13a1db;
+
+    span {
+      color: white;
+    }
+  }
+}

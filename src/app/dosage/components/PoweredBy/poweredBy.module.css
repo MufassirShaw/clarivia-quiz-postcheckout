@@ -1,0 +1,25 @@
+.mainContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 6rem !important;
+}
+
+.textContent {
+  h3 {
+    color: red;
+    font-size: 45px;
+    font-weight: 600;
+    line-height: 1.2em;
+    margin-bottom: 30px;
+    span {
+      color: #13a1db;
+    }
+  }
+}
+
+.videoCard {
+  width: 100%;
+  border: 8px solid #fff;
+  box-shadow: 0 2px 20px 5px rgba(0, 0, 0, 0.16);
+}
