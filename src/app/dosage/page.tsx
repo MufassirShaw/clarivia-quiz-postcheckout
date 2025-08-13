@@ -10,6 +10,7 @@ import {
   Testimonials,
   MedicationWork,
   PoweredBy,
+  WhyUs,
 } from "./components"
 
 import "./dosage.css"
@@ -44,6 +45,7 @@ const Home: React.FC = () => {
         <Testimonials />
         <MedicationWork />
         <PoweredBy />
+        <WhyUs />
       </main>
     </>
   )
