@@ -170,3 +170,11 @@ p {
   background-image: url("../../../public/images/bg_white_banner.webp");
   background-size: cover;
 }
+
+.bg_colorBlue {
+  background-color: #002150;
+}
+
+.no-padding {
+  padding: 0px;
+}

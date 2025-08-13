@@ -15,7 +15,7 @@ import Head from "next/head"
 // import BottleOptions from "../components/BottleOptions"
 // import FAQ from "../components/FAQ"
 // import Footer from "../c"
-import { Header, Hero, Medications } from "./components"
+import { Header, Hero, Medications, TrustedBy } from "./components"
 
 import "./dosage.css"
 
@@ -37,6 +37,11 @@ const Home: React.FC = () => {
           <Header />
           <div className="container">
             <Hero />
+          </div>
+        </div>
+        <div className="bg_colorBlue">
+          <div className="container no-padding">
+            <TrustedBy />
           </div>
         </div>
 

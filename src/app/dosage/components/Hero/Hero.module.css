@@ -17,7 +17,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: start;
-  padding: 90px 0;
+  padding: 49px 0 90px;
 }
 
 .rightCol {
@@ -70,16 +70,29 @@
 }
 
 .ctaButton {
-  background-color: #009eda;
-  color: #fff;
-  padding: 12px 25px;
-  border-radius: 25px;
-  text-decoration: none;
+  text-align: center;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  object-fit: fill;
+  background-color: #e4332f;
+  background-image: url(../../../../../public//images/long-arrow.png);
+  background-position: 75%;
+  background-repeat: no-repeat;
+  background-size: 22px 10px;
+  border-radius: 7px;
+  width: 100%;
+  max-width: 300px;
+  margin-top: 30px;
+  padding: 20px 60px 20px 20px;
+  font-size: 16px;
   font-weight: 600;
+  display: inline-block;
+  color: white;
+  text-decoration: none;
 }
 
 .ctaButton:hover {
-  background-color: #007cae;
+  background-color: #b82522;
 }
 
 .mainImage {

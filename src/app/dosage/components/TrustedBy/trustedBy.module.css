@@ -1,0 +1,65 @@
+.carousel {
+  position: relative;
+  overflow: hidden;
+}
+
+.offerCarousel {
+  display: flex;
+  align-items: center;
+}
+
+.leftPartShadow {
+  position: absolute;
+  inset: 0% auto 0% 0%;
+  width: 90px;
+  height: 100%;
+  background: linear-gradient(90deg, #002150 10%, rgba(255, 255, 255, 0));
+  z-index: 1;
+}
+
+.leftPartShadow.right {
+  inset: 0% 0% 0% auto;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), #002150 90%);
+}
+
+.logoCarouselWrap {
+  display: flex;
+  gap: 2rem;
+  animation: scroll 30s linear infinite;
+}
+
+.series {
+  display: flex;
+}
+
+.logoCarousel {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.logoCarouselItem {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* height: 80px; fixed height for alignment */
+}
+
+.logoImage {
+  max-height: 100%;
+  width: auto;
+  object-fit: contain;
+  padding: 2rem 0px;
+}
