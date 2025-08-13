@@ -5,6 +5,7 @@ import ClarityInit from "@/components/ClarityInit"
 import { GoogleTagManager } from "@next/third-parties/google"
 import { analyticsConfig } from "@/config/analytics"
 import { ToastContainer } from "react-toastify"
+import "react-responsive-carousel/lib/styles/carousel.min.css" // requires a loader
 
 export const metadata: Metadata = {
   title: "Clarivia",

@@ -200,3 +200,22 @@ p {
   color: white;
   text-decoration: none;
 }
+
+.testimonial__carousel {
+  position: relative;
+  .carousel {
+    overflow: visible;
+  }
+  .control-dots {
+    position: absolute;
+    bottom: -60px;
+    .dot {
+      width: 14px;
+      height: 14px;
+      background-color: #c3c3c3;
+      &.selected {
+        background-color: #000;
+      }
+    }
+  }
+}
