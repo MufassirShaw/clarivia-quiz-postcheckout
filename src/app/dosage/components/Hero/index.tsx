@@ -48,7 +48,7 @@ export const Hero = () => {
               </div>
             ))}
           </div>
-          <a href="#bottle-options" className={styles.ctaButton}>
+          <a href="#bottle-options" className="buy-now-button">
             Buy Now
           </a>
         </div>
