@@ -11,9 +11,12 @@ import {
   MedicationWork,
   PoweredBy,
   WhyUs,
+  MedSelection,
+  Faqs,
 } from "./components"
 
 import "./dosage.css"
+import Footer from "./components/Footer"
 
 const Home: React.FC = () => {
   return (
@@ -46,6 +49,9 @@ const Home: React.FC = () => {
         <MedicationWork />
         <PoweredBy />
         <WhyUs />
+        <MedSelection />
+        <Faqs />
+        <Footer />
       </main>
     </>
   )

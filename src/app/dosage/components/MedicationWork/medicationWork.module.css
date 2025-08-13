@@ -6,8 +6,10 @@
   display: flex;
   gap: 4rem;
 }
+
 .textContent {
   color: white;
+
   h3 {
     margin-top: 20px;
     font-size: 60px;
@@ -17,5 +19,70 @@
     span {
       color: white;
     }
+  }
+}
+
+/* Responsive Breakpoints */
+
+/* Large tablets and small desktops (1024px and down) */
+@media (max-width: 1024px) {
+  .mainContainer {
+    padding: 35px 50px !important;
+    gap: 3rem;
+  }
+
+  .textContent h3 {
+    font-size: 50px;
+  }
+}
+
+/* Tablets (768px and down) */
+@media (max-width: 768px) {
+  .mainContainer {
+    padding: 30px 40px !important;
+    margin: 30px auto !important;
+    gap: 2rem;
+    flex-direction: column;
+  }
+
+  .textContent h3 {
+    font-size: 42px;
+    margin-top: 15px;
+    text-align: center;
+  }
+}
+
+/* Mobile devices (480px and down) */
+@media (max-width: 480px) {
+  .mainContainer {
+    padding: 25px 20px !important;
+    margin: 20px auto !important;
+    gap: 1.5rem;
+    border-radius: 8px;
+  }
+
+  .textContent {
+    text-align: center;
+  }
+
+  .textContent h3 {
+    font-size: 32px;
+    margin-top: 10px;
+    line-height: 1.2;
+  }
+}
+
+/* Extra small devices (360px and down) */
+@media (max-width: 360px) {
+  .mainContainer {
+    padding: 20px 15px !important;
+    margin: 15px auto !important;
+    gap: 1rem;
+    border-radius: 6px;
+  }
+
+  .textContent h3 {
+    font-size: 28px;
+    margin-top: 8px;
   }
 }
