@@ -42,13 +42,12 @@ export const Hero = () => {
             {features.map((f, idx) => (
               <div className={styles.feature} key={idx}>
                 <div className={styles.icon}>
-                  <Image src={f.icon} alt="" width={50} height={50} />
+                  <Image src={f.icon} alt="" width={25} height={25} />
                 </div>
                 <p className={styles.featureText}>{f.text}</p>
               </div>
             ))}
           </div>
-
           <a href="#bottle-options" className={styles.ctaButton}>
             Buy Now
           </a>
@@ -58,8 +57,8 @@ export const Hero = () => {
           <Image
             src="/images/Man-509.webp"
             alt="Male model"
-            width={509}
-            height={600}
+            width={600}
+            height={800}
             className={styles.mainImage}
           />
         </div>

@@ -33,10 +33,13 @@ const Home: React.FC = () => {
       </Head>
 
       <main>
-        <Header />
-        <div className="container">
-          <Hero />
+        <div className="bg_white">
+          <Header />
+          <div className="container">
+            <Hero />
+          </div>
         </div>
+
         {/* <LogoCarousel />
         <VideoSection />
         <HowItWorks />
