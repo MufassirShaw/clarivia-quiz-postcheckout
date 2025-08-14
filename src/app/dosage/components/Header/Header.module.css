@@ -1,0 +1,123 @@
+/* Top strip (section-46) */
+.topBar {
+  padding: 15px 0;
+  background-color: #000;
+}
+
+.topText {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+}
+
+.callLink {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Navbar (section-6.banner_sec + navbar-3) */
+.navbar {
+  /* position: absolute; */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 15px 0;
+}
+
+.navContainer {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brandLink {
+  display: inline-block;
+}
+
+.logoImage {
+  display: block;
+  width: 145px;
+  height: auto;
+  max-height: 66px;
+}
+
+/* Nav links */
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navLink {
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  color: #222;
+  text-decoration: none;
+  padding: 8px 0;
+}
+
+.navLink:hover {
+  opacity: 0.8;
+}
+
+/* Mobile menu button (menu-button-3) */
+.menuButton {
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #222;
+  cursor: pointer;
+}
+
+/* Mobile menu */
+.mobileMenu {
+  display: none;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 20px;
+}
+
+.mobileNavLink {
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #002150;
+  text-decoration: none;
+  padding: 8px 0;
+}
+
+.mobileNavLink:hover {
+  opacity: 0.8;
+}
+
+/* Responsive behavior */
+@media (max-width: 991px) {
+  .navLinks {
+    display: none;
+  }
+
+  .menuButton {
+    display: block;
+  }
+
+  .mobileMenu {
+    display: flex;
+  }
+
+  .logoImage {
+    width: 140px;
+  }
+}

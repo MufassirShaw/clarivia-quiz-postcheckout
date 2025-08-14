@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { apiConfig } from "@/config/api"
 import { clearLead, getLead } from "@/utils/lead"
 import * as Sentry from "@sentry/nextjs"
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
     // Get session_id from cookie
     const { sessionId } = await getLead()
-
+    const { med } = (await request.json()) as { med: string }
     // Validate session exists
     if (!sessionId) {
       const err = new Error("Session not found. Please start a new session.")
@@ -21,7 +21,7 @@ export async function POST() {
     const api_url = `${apiConfig.baseUrl}/sessions/${sessionId}/complete`
 
     const body = {
-      med: [apiConfig.productId],
+      med: [med],
       couponCode: null,
       session_id: sessionId,
     }
@@ -67,6 +67,11 @@ export async function POST() {
         { status: 502 }
       )
     }
+
+    console.log({
+      body,
+      url: data.checkout_url,
+    })
 
     // Clear the session cookie
     await clearLead()

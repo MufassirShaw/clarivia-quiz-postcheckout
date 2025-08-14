@@ -1,0 +1,267 @@
+/* components/Footer/Footer.module.css */
+
+.footerSection {
+  background: #081158;
+  color: white;
+  padding: 60px 0 0 0;
+}
+
+.footerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footerBrand {
+  display: inline-block;
+  margin-bottom: 30px;
+}
+
+.brandLogo {
+  width: auto;
+  height: 60px;
+  object-fit: contain;
+}
+
+.workingHours {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.workingHoursHeading {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64b5f6;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.workingHoursText {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #e3f2fd;
+  margin: 0;
+}
+
+.footerLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64b5f6;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.footerLink {
+  color: #e3f2fd;
+  text-decoration: none;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  transition: color 0.3s ease;
+  /* margin-bottom: 8px; */
+}
+
+.footerLink:hover {
+  color: #64b5f6;
+}
+
+.footerText {
+  color: #e3f2fd;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.badgesContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  justify-content: center;
+  height: 100%;
+}
+
+.hipaaImage {
+  width: auto;
+  height: 80px;
+  object-fit: contain;
+}
+
+.legitscriptContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.legitscriptPlaceholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.legitscriptImage {
+  width: auto;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.legalContainer {
+  max-width: 1200px;
+  margin: 60px auto 0;
+  padding: 0 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 40px;
+}
+
+.legalText {
+  line-height: 1.6;
+  color: #b3c5ef;
+  > p {
+    font-size: 0.8rem !important;
+  }
+}
+
+.legalText p {
+  margin-bottom: 16px;
+}
+
+.legalText p:last-child {
+  margin-bottom: 0;
+}
+
+.footerBottom {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding: 30px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footerCopyright {
+  font-size: 0.9rem;
+  color: #b3c5ef;
+}
+
+.footerLegal {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.legalLink {
+  font-size: 0.9rem;
+  color: #b3c5ef;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.legalLink:hover {
+  color: #64b5f6;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .footerContainer {
+    gap: 40px;
+  }
+
+  .badgesContainer {
+    flex-direction: row;
+    justify-content: center;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footerSection {
+    padding: 40px 0 0 0;
+  }
+
+  .footerContainer {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .column {
+    align-items: center;
+  }
+
+  .workingHours {
+    text-align: center;
+  }
+
+  .badgesContainer {
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .hipaaImage {
+    height: 60px;
+  }
+
+  .legitscriptImage {
+    height: 50px;
+  }
+
+  .legalContainer {
+    margin-top: 40px;
+    padding-top: 30px;
+  }
+
+  .footerBottom {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .footerLegal {
+    justify-content: center;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footerContainer {
+    padding: 0 16px;
+    gap: 30px;
+  }
+
+  .brandLogo {
+    height: 50px;
+  }
+
+  .badgesContainer {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .footerLegal {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .legalContainer {
+    padding: 0 16px;
+    padding-top: 20px;
+  }
+
+  .legalText {
+    font-size: 0.75rem;
+  }
+}

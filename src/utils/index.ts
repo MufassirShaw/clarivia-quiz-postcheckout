@@ -465,8 +465,7 @@ export const quizData = {
       required: true,
       resolver: (answers: Record<string, AnswerType>) =>
         answers["specific_concerns"] === "Yes",
-    },
-    // Question 20: Comprehensive Treatment Consent
+    }, // Question 20: Comprehensive Treatment Consent
     {
       id: "treatment_consent",
       type: QuestionType.Consent,
@@ -474,6 +473,11 @@ export const quizData = {
       consentType: ConsentType.TreatmentConsent,
       isLast: true,
     },
+    // {
+    //   id: "med_selection",
+    //   type: QuestionType.Med_Selection,
+    //   isLast: true,
+    // },
   ],
 }
 

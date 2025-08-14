@@ -1,0 +1,174 @@
+.section {
+  padding: 80px 20px;
+  /* background-color: #f8f9fa; */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.mainTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #e74c3c;
+  margin: 0 0 3rem 0;
+  text-align: center;
+}
+
+.stepsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  padding: 1.5rem;
+}
+
+.stepIcon {
+  margin-bottom: 2rem;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+
+.separator {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  > .stepContainer {
+    width: 100%;
+  }
+  &::before,
+  &::after {
+    content: "";
+    display: block;
+    height: 350px;
+    width: 1.5px;
+    background-color: #7171712c;
+  }
+}
+.stepTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #e74c3c;
+  margin: 0 0 1rem 0;
+  line-height: 1.3;
+}
+
+.stepDescription {
+  font-size: 20px;
+  color: #6c757d;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 280px;
+  padding-bottom: 2rem;
+}
+
+.lineTop,
+.lineBottom {
+  position: absolute;
+  width: 100px;
+  height: auto;
+}
+
+.lineTop {
+  top: -30px;
+  right: -50px;
+  transform: rotate(15deg);
+}
+
+.lineBottom {
+  bottom: -30px;
+  left: -50px;
+  transform: rotate(-15deg);
+}
+
+.tagline {
+  font-size: 40px;
+  font-weight: 400;
+  color: #081158;
+  margin: 2rem 0 2rem 0;
+  font-style: italic;
+  text-align: center;
+}
+
+.buyButton {
+  margin: 20px auto;
+}
+
+.buyButton:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(231, 76, 60, 0.4);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .section {
+    padding: 60px 20px;
+  }
+
+  .mainTitle {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .stepsRow {
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .lineTop,
+  .lineBottom {
+    display: none;
+  }
+
+  .stepDescription {
+    max-width: 100%;
+  }
+
+  .tagline {
+    font-size: 1.4rem;
+  }
+
+  .buyButton {
+    padding: 12px 30px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainTitle {
+    font-size: 1.8rem;
+  }
+
+  .stepTitle {
+    font-size: 1.1rem;
+  }
+
+  .stepDescription {
+    font-size: 0.9rem;
+  }
+
+  .tagline {
+    font-size: 1.2rem;
+  }
+}
