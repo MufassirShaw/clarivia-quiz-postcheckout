@@ -106,7 +106,14 @@ export default function Quiz() {
         }
 
         if (currentQuestion.isLast) {
-          router.push("/dosage")
+          const currentUrl = new URL(window.location.href)
+          const dosageUrl = new URL("/dosage", window.location.origin)
+
+          currentUrl.searchParams.forEach((value, key) => {
+            dosageUrl.searchParams.set(key, value)
+          })
+
+          router.push(dosageUrl.pathname + dosageUrl.search)
           return
         }
 
