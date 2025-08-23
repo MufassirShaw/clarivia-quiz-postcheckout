@@ -97,7 +97,14 @@ export const MedSelection = () => {
         url: string
       }
 
-      window.location.assign(url)
+      const currentUrl = new URL(window.location.href)
+      const newUrl = new URL(url, window.location.origin)
+
+      currentUrl.searchParams.forEach((value, key) => {
+        newUrl.searchParams.set(key, value)
+      })
+
+      window.location.assign(newUrl.toString())
     } catch (error) {
       toast.error("Something went wrong, try again!")
       console.log("something went wrong", error)
