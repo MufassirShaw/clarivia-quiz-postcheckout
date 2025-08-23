@@ -80,6 +80,8 @@ export async function PUT(request: NextRequest) {
 
     const responseData = await response.json()
 
+    console.log({ leadData: response })
+
     return NextResponse.json(
       { data: responseData },
       { status: response.status }

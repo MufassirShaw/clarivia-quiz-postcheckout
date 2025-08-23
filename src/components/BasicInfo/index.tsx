@@ -104,9 +104,10 @@ export const BasicInfo = ({
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
-    const [day, month, year] = data.birthday
-      .split("/")
-      .map((num) => parseInt(num))
+    const [d, m, year] = data.birthday.split("/").map((num) => parseInt(num))
+
+    const month = String(m).padStart(2, "0")
+    const day = String(d).padStart(2, "0")
 
     await onAnswer({
       email: data.email,
