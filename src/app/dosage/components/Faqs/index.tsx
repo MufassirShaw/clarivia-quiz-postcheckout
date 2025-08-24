@@ -202,11 +202,14 @@ export const Faqs = () => {
       question: "Is this a subscription?",
       answer: (
         <p>
-          Our doctors typically prescribe a 12-month treatment plan due to the
-          nature of toenail fungus and the time it takes to treat effectively.
-          To make this treatment more affordable, we bill in four 3-month
-          increments rather than for the full 12 months at once. You may cancel
-          at anytime if you&apos;re unhappy.
+          We understand your concern about not being put on a continuing
+          subscription. Our doctors typically prescribe a 12-month treatment
+          plan due to the nature of toenail fungus and the time it takes to
+          treat effectively. To make this treatment more affordable, we offer
+          three flexible payment options — monthly, every 3 months (with a
+          discount), or every 6 months (with an even greater discount). All
+          plans cover the full 12-month duration of treatment. You may cancel at
+          any time if you&apos;re unhappy.
         </p>
       ),
     },
