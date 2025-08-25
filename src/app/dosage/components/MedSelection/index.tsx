@@ -56,7 +56,7 @@ const options: BottleOption[] = [
     title: "Most Popular",
     subtitle: "90 Day Supply",
     image: "/images/3bottles.webp",
-    price: 69,
+    price: 59,
     originalPrice: 327,
     totalPrice: 177,
     savings: 150,
