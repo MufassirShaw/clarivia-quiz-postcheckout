@@ -91,19 +91,16 @@ export default function Quiz() {
 
   const saveAnswers = useCallback(
     async (quizAnswers: Record<string, AnswerType>) => {
-      const promises: Promise<void>[] = []
       const transformedAnswers = transformAnswers(quizAnswers)
-      Object.keys(transformedAnswers).forEach((key) => {
+
+      for (const key of Object.keys(transformedAnswers)) {
         const answer = transformedAnswers[key]
-        promises.push(
-          saveAnswerToDosable({
-            qid: Number(key),
-            answer: answer.value,
-            question: answer.question,
-          })
-        )
-      })
-      await Promise.all(promises)
+        await saveAnswerToDosable({
+          qid: Number(key),
+          answer: answer.value,
+          question: answer.question,
+        })
+      }
     },
     [saveAnswerToDosable, transformAnswers]
   )

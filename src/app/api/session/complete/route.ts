@@ -25,7 +25,6 @@ export async function POST(request: NextRequest) {
       couponCode: null,
       session_id: sessionId,
     }
-
     const response = await fetch(api_url, {
       method: "POST",
       headers: {
