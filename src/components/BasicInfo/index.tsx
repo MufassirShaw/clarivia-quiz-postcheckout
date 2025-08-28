@@ -74,10 +74,8 @@ type FormData = z.infer<typeof schema>
 
 export const BasicInfo = ({
   onAnswer,
-  initState,
 }: {
   onAnswer: (info: Partial<ILead>) => Promise<void>
-  initState: Partial<ILead>
 }) => {
   const {
     register,
@@ -88,10 +86,6 @@ export const BasicInfo = ({
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange", // validates as user types
-    defaultValues: {
-      ...initState,
-      birthday: formDate(initState.birthday ?? ""),
-    },
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 

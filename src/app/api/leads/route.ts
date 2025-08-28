@@ -6,10 +6,13 @@ import * as Sentry from "@sentry/nextjs"
 
 const leadApiUrl = `${apiConfig.baseUrl}/leads/`
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  const lead = (await request.json()) as Partial<ILead>
+
   try {
     const payload = {
       tenant_id: apiConfig.tenantId,
+      ...lead,
     }
 
     const res = await fetch(leadApiUrl, {
@@ -24,7 +27,7 @@ export async function POST() {
     if (!res.ok) {
       const err = new Error(`Failed to create lead: ${res.statusText}`)
       Sentry.captureException(err, {
-        extra: { status: res.status, payload, url: leadApiUrl },
+        extra: { status: res.status, payload, url: leadApiUrl, lead },
       })
       return NextResponse.json(
         { error: "Failed to create lead", reason: res.statusText },
@@ -80,7 +83,7 @@ export async function PUT(request: NextRequest) {
 
     const responseData = await response.json()
 
-    console.log({ leadData: response })
+    console.log({ leadData: responseData })
 
     return NextResponse.json(
       { data: responseData },
