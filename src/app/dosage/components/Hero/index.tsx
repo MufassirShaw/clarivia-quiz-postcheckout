@@ -6,7 +6,7 @@ import styles from "./Hero.module.css"
 const features = [
   {
     icon: "/images/i1.png",
-    text: "Targets Deep Nail Fungus Where It Starts.",
+    text: "Targets Nail Fungus Where It Starts.",
   },
   {
     icon: "/images/i2.png",
@@ -18,7 +18,7 @@ const features = [
   },
   {
     icon: "/images/i4.png",
-    text: "Find out if you’re approved in about 90 seconds.",
+    text: "Simply Choose Your Desired Prescription Option Below.",
   },
 ]
 
@@ -34,7 +34,7 @@ export const Hero = () => {
           </p>
 
           <h1 className={styles.heading}>
-          Target Nail Fungus Fast with Doctor-Prescribed Topical Antifungals Itraconazole + Terbinafine
+          Congratulations! You qualify for Clarivia: Prescription Strength Toenail Fungus Medication.
           </h1>
 
           <div className={styles.features}>

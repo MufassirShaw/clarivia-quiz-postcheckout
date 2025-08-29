@@ -30,9 +30,9 @@ function ProcessStep({ icon, title, description, showLine }: ProcessStepProps) {
 const processSteps = [
   {
     icon: "/images/process1.webp",
-    title: "Get Approved in About 90 Seconds",
+    title: "Intake Form (Already Completed)",
     description:
-      "Complete our short questionnaire and find out instantly if you're approved.",
+      "The Intake Form Is Already Completed And You Are A Good Candidate For Clarivia.",
     stepNumber: 1,
   },
   {
@@ -72,7 +72,7 @@ export const HowItWorks = () => {
         </div>
 
         <h3 className={styles.tagline}>
-          <em>&quot;Get approved in about 90 seconds&quot;</em>
+          <em>&quot;Click Below To Choose Your Package&quot;</em>
         </h3>
         <a
           href="#bottle-options"

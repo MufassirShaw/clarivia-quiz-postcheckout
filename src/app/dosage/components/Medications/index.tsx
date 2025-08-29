@@ -110,7 +110,11 @@ export const Medications: React.FC = () => {
             subtitle="30 Day Supply"
             price="99"
             image="/images/1bottle.webp"
-            features={["90-Day Money Back Guarantee"]}
+            features={[
+              "12 Month Doctor Prescribed Refill",
+              "Billed Monthly",
+              "90-Day Money Back Guarantee"
+            ]}
             total="$99"
             originalTotal="$109"
             medId="C-Mx5p1y8Zl0RqTnE6B7oJdK2GzVvF4hWs"
@@ -124,7 +128,9 @@ export const Medications: React.FC = () => {
             image="/images/6bottles.webp"
             features={[
               "FREE Doctor Visit",
+              "12 Month Doctor Prescribed Refill",
               "FREE US Shipping",
+              "Billed Every 6 Months",
               "90-Day Money Back Guarantee",
             ]}
             total="$294"
@@ -141,7 +147,9 @@ export const Medications: React.FC = () => {
             image="/images/3bottles.webp"
             features={[
               "FREE Doctor Visit",
+              "12 Month Doctor Prescribed Refill",
               "FREE US Shipping",
+              "Billed Every 3 Months",
               "90-Day Money Back Guarantee",
             ]}
             total="$177"
