@@ -34,7 +34,8 @@ export const Hero = () => {
           </p>
 
           <h1 className={styles.heading}>
-          Congratulations! You qualify for Clarivia: Prescription Strength Toenail Fungus Medication.
+            Congratulations! You qualify for Clarivia: Prescription Strength
+            Toenail Fungus Medication.
           </h1>
 
           <div className={styles.features}>
