@@ -34,8 +34,7 @@ export const Hero = () => {
           </p>
 
           <h1 className={styles.heading}>
-            Treat Toenail Fungus Today: Get Clearer, Healthier Nails with
-            Topical Itraconazole + Terbinafine
+          Target Nail Fungus Fast with Doctor-Prescribed Topical Antifungals Itraconazole + Terbinafine
           </h1>
 
           <div className={styles.features}>
