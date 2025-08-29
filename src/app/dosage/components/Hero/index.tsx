@@ -6,7 +6,7 @@ import styles from "./Hero.module.css"
 const features = [
   {
     icon: "/images/i1.png",
-    text: "Attacks stubborn fungus at the source.",
+    text: "Targets Deep Nail Fungus Where It Starts.",
   },
   {
     icon: "/images/i2.png",
@@ -47,9 +47,9 @@ export const Hero = () => {
               </div>
             ))}
           </div>
-          <a href="#bottle-options" className="buy-now-button">
+          {/* <a href="#bottle-options" className="buy-now-button">
             Buy Now
-          </a>
+          </a> */}
         </div>
         {/* Right Column */}
         <div className={styles.rightCol}>
