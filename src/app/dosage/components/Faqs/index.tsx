@@ -60,12 +60,7 @@ export const Faqs = () => {
       question: "How do I qualify for the medication?",
       answer: (
         <p>
-          Simply complete our secure online visit, providing details about your
-          toenail fungus symptoms and relevant health history. One of our
-          U.S.-based licensed physicians will carefully review your information
-          to ensure Clarivia is a safe and medically appropriate treatment
-          option for your specific situation. If you qualify, the physician will
-          issue your prescription.
+          You’ve already completed the intake form — that’s the first step. Next, simply complete the checkout. A U.S.-based licensed physician will then carefully review your information to determine whether Clarivia is a safe and medically appropriate treatment option for you. If approved, the physician will issue your prescription.
         </p>
       ),
     },
@@ -98,7 +93,7 @@ export const Faqs = () => {
     },
     {
       question:
-        "What if I want to talk to a doctor after I&apos;ve started on the medication?",
+        "What if I want to talk to a doctor after I've started on the medication?",
       answer: (
         <p>
           Within our secure patient portal, there is a feature allowing you to
@@ -125,17 +120,6 @@ export const Faqs = () => {
           information is securely collected at checkout, but the charge is only
           processed once your prescription is approved and sent to our partner
           pharmacy. If you are not approved, you will not be charged.
-        </p>
-      ),
-    },
-    {
-      question: "How does the subscription work?",
-      answer: (
-        <p>
-          Joining our subscription model allows you to receive your medications
-          automatically every month without the need of having to personally
-          reorder monthly. Discounts will be available for those on the
-          subscription model. Cancel anytime.
         </p>
       ),
     },
