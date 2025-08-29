@@ -10,7 +10,7 @@ const features = [
   },
   {
     icon: "/images/i2.png",
-    text: "Safe topical cream avoids risks of oral meds.*",
+    text: "Topical Delivery Designed to Minimize Systemic Side Effects.*",
   },
   {
     icon: "/images/i3.png",
