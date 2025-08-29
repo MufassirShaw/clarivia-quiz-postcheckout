@@ -5,7 +5,7 @@ import * as Sentry from "@sentry/nextjs"
 
 export async function POST(request: NextRequest) {
   try {
-    // Get session_id from cookie
+    // Get sessionid from cookie
     const { sessionId } = await getLead()
     const { med } = (await request.json()) as { med: string }
     // Validate session exists
