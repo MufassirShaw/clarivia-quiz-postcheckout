@@ -30,7 +30,11 @@ const options: BottleOption[] = [
     price: 99,
     originalPrice: 109,
     savings: undefined,
-    features: ["90-Day Money Back Guarantee"],
+    features: [
+      "12 Month Doctor Prescribed Refill",
+      "Billed Monthly",
+      "90-Day Money Back Guarantee",
+    ],
     isPopular: false,
     isBestValue: false,
   },
@@ -45,7 +49,9 @@ const options: BottleOption[] = [
     savings: 360,
     features: [
       "FREE Doctor Visit",
+      "12 Month Doctor Prescribed Refill",
       "FREE US Shipping",
+      "Billed Every 6 Months",
       "90-Day Money Back Guarantee",
     ],
     isPopular: false,
@@ -62,7 +68,9 @@ const options: BottleOption[] = [
     savings: 150,
     features: [
       "FREE Doctor Visit",
+      "12 Month Doctor Prescribed Refill",
       "FREE US Shipping",
+      "Billed Every 3 Months",
       "90-Day Money Back Guarantee",
     ],
     isPopular: true,
