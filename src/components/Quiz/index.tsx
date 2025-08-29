@@ -32,8 +32,8 @@ export default function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, AnswerType>>({})
   const [hardStopModalOpen, setHardStopModalOpen] = useState(false)
-  const [leadInfo, setLeadInfo] = useState<Partial<ILead> | null>(null)
-  // const [isSubmitting, setIsSubmitting] = useState(false)
+  const [leadState, setLeadState] = useState("")
+
   const currentQuestion = quizData.questions[currentQuestionIndex]
   const router = useRouter()
 
@@ -67,6 +67,44 @@ export default function Quiz() {
     []
   )
 
+  const transformAnswers = useCallback(
+    (quizAnswers: Record<string, AnswerType>) => {
+      let transformed: Record<string, { value: string; question: string }> = {}
+
+      Object.entries(quizAnswers).forEach(([key, value]) => {
+        const dosableQId = getDosableId(key)
+        const question = quizData.questions.find((q) => q.id === key)
+        if (dosableQId && question) {
+          transformed = {
+            ...transformed,
+            [dosableQId]: {
+              value,
+              question: question.title,
+            },
+          }
+        }
+      })
+      return transformed
+    },
+    []
+  )
+
+  const saveAnswers = useCallback(
+    async (quizAnswers: Record<string, AnswerType>) => {
+      const transformedAnswers = transformAnswers(quizAnswers)
+
+      for (const key of Object.keys(transformedAnswers)) {
+        const answer = transformedAnswers[key]
+        await saveAnswerToDosable({
+          qid: Number(key),
+          answer: answer.value,
+          question: answer.question,
+        })
+      }
+    },
+    [saveAnswerToDosable, transformAnswers]
+  )
+
   const goToNextQuestion = useCallback(
     (currenAnswers: Record<string, AnswerType>, index: number) => {
       const nextIndex = index + 1
@@ -95,17 +133,9 @@ export default function Quiz() {
       }
 
       try {
-        const dosableQId = getDosableId(currentQuestion.id)
-
-        if (dosableQId) {
-          await saveAnswerToDosable({
-            qid: dosableQId,
-            question: currentQuestion.title ?? "",
-            answer,
-          })
-        }
-
         if (currentQuestion.isLast) {
+          await saveAnswers({ ...answers, [currentQuestion.id]: answer })
+
           const currentUrl = new URL(window.location.href)
           const dosageUrl = new URL("/dosage", window.location.origin)
 
@@ -132,27 +162,26 @@ export default function Quiz() {
     },
     [
       currentQuestion,
-      saveAnswerToDosable,
+      saveAnswers,
+      answers,
+      router,
       goToNextQuestion,
       currentQuestionIndex,
-      router,
     ]
   )
-  const saveLeadInfo = useCallback(
+
+  const saveLeadToDosable = useCallback(
     async (lead: Partial<ILead>) => {
-      const leadData = {
-        ...leadInfo,
-        ...lead,
-        gender: answers["sex_at_birth"],
-      }
-      setLeadInfo((prev) => (prev ? { ...prev, ...lead } : { ...lead }))
       try {
         const response = await fetch(`/api/leads`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(leadData),
+          body: JSON.stringify({
+            ...lead,
+            gender: answers["sex_at_birth"] ?? "Male",
+          }),
         })
 
         if (!response.ok) {
@@ -162,40 +191,30 @@ export default function Quiz() {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
-        const indexOfBasicInfo = quizData.questions.findIndex(
-          (q) => q.id === "basic_info"
-        )
-        if (indexOfBasicInfo) {
-          setCurrentQuestionIndex(indexOfBasicInfo)
-        }
         toast.error(
           "Something went wrong, please try a different email and/or phone number"
         )
       }
     },
-    [leadInfo, answers, goToNextQuestion, currentQuestionIndex]
+    [answers, goToNextQuestion, currentQuestionIndex]
   )
 
-  const updateLead = useCallback(
+  const createLead = useCallback(
     async (lead: Partial<ILead>) => {
-      setLeadInfo((prev) => (prev ? { ...prev, ...lead } : { ...lead }))
-      goToNextQuestion(answers, currentQuestionIndex)
-    },
-    [answers, currentQuestionIndex, goToNextQuestion]
-  )
-
-  const initializeQuiz = useCallback(
-    async (answer: AnswerType) => {
       try {
         const response = await fetch("/api/leads", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            ...lead,
+            lead_state: leadState,
+          }),
         })
 
         if (response.ok) {
-          handleAnswer(answer)
+          goToNextQuestion(answers, currentQuestionIndex)
           return
         }
 
@@ -205,7 +224,7 @@ export default function Quiz() {
         console.error("Error initializing session:", error)
       }
     },
-    [handleAnswer]
+    [answers, currentQuestionIndex, goToNextQuestion, leadState]
   )
 
   const component = useMemo(() => {
@@ -215,7 +234,7 @@ export default function Quiz() {
       case QuestionType.Severity:
         return (
           <SeverityQuestion
-            onAnswer={initializeQuiz}
+            onAnswer={handleAnswer}
             currentAnswer={answers[currentQuestion.id] as number}
             question={currentQuestion as SeverityQuestionType}
           />
@@ -267,7 +286,10 @@ export default function Quiz() {
             placeholder={currentQuestion.placeholder}
             banner={currentQuestion.banner}
             currentAnswer={answers[currentQuestion.id] as string}
-            onAnswer={updateLead}
+            onAnswer={async (lead) => {
+              setLeadState(lead.lead_state ?? "")
+              goToNextQuestion(answers, currentQuestionIndex)
+            }}
             required={currentQuestion.required}
           />
         )
@@ -283,23 +305,14 @@ export default function Quiz() {
             key={currentQuestion.id}
           />
         )
-      case QuestionType.Basic_Info:
-        return (
-          <BasicInfo
-            onAnswer={updateLead}
-            key={currentQuestion.id}
-            initState={leadInfo ?? {}}
-          />
-        )
-
       case QuestionType.Personal_Info:
         return (
-          <PersonalInfo
-            onAnswer={saveLeadInfo}
-            initState={leadInfo ?? {}}
-            key={currentQuestion.id}
-          />
+          <PersonalInfo onAnswer={saveLeadToDosable} key={currentQuestion.id} />
         )
+
+      case QuestionType.Basic_Info:
+        return <BasicInfo onAnswer={createLead} key={currentQuestion.id} />
+
       case QuestionType.Consent:
         return (
           <Consent
@@ -313,14 +326,12 @@ export default function Quiz() {
     }
   }, [
     currentQuestion,
-    initializeQuiz,
-    answers,
     handleAnswer,
-    updateLead,
-    saveLeadInfo,
+    answers,
+    saveLeadToDosable,
+    createLead,
     goToNextQuestion,
     currentQuestionIndex,
-    leadInfo,
   ])
 
   const progress = useMemo(() => {
@@ -331,15 +342,6 @@ export default function Quiz() {
     const totalQuestion = quizData.questions.length
     return ((currentQuestionIndex + 1) / totalQuestion) * 100
   }, [currentQuestionIndex])
-
-  // if (isLoading) {
-  //   return (
-  //     <div className={styles.quizLoading}>
-  //       <div className={styles.loadingSpinner}></div>
-  //       <p>Loading...</p>
-  //     </div>
-  //   )
-  // }
 
   return (
     <>

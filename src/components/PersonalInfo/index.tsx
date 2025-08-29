@@ -56,10 +56,8 @@ const formatPhoneNumber = (value: string) => {
 
 export const PersonalInfo = ({
   onAnswer,
-  initState,
 }: {
   onAnswer: (info: Partial<ILead>) => Promise<void>
-  initState: Partial<ILead>
 }) => {
   const {
     register,
@@ -70,10 +68,6 @@ export const PersonalInfo = ({
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange",
-    defaultValues: {
-      ...initState,
-      phone: formatPhoneNumber(initState?.phone ?? ""),
-    },
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const containerRef = useRef<HTMLButtonElement>(null)

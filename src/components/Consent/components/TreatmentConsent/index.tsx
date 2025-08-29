@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import styles from "./treatmentConsent.module.css"
+import { Loader } from "@/components/Loader"
 
 const consent =
   "I have read and understand the information and I wish to continue"
@@ -218,7 +219,7 @@ export const TreatmentConsent = ({
           onClick={handleAccept}
           ref={containerRef}
         >
-          I Agree & Continue
+          {isSubmitting && <Loader />}I Agree & Continue
         </button>
       </div>
     </>
