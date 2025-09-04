@@ -38,8 +38,8 @@ export const Footer = () => {
           >
             Send an Email
           </Link>
-          <Link href="tel:256-792-5982" className={styles.footerLink}>
-            Call us: 256-792-5982
+          <Link href="tel:1-833-916-1795" className={styles.footerLink}>
+            Call us: +1-833-916-1795
           </Link>
           <p className={styles.footerText}>
             Got a question: support@getclarivia.com

@@ -14,8 +14,8 @@ export const Header = () => {
       <div className={styles.topBar}>
         <p className={styles.topText}>
           Available Nationwide - Questions? Call Us:{" "}
-          <a href="tel:2567925982" className={styles.callLink}>
-            256-792-5982
+          <a href="tel:1-833-916-1795" className={styles.callLink}>
+            +1-833-916-1795
           </a>
         </p>
       </div>
