@@ -7,9 +7,9 @@ export async function POST(request: NextRequest) {
   try {
     // Get sessionid from cookie
     const { sessionId } = await getLead()
-    const { med, rcid } = (await request.json()) as {
+    const { med, rtkcid } = (await request.json()) as {
       med: string
-      rcid: string
+      rtkcid: string
     }
     // Validate session exists
     if (!sessionId) {
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       med: [med],
       couponCode: null,
       session_id: sessionId,
-      utm_rt_cid: rcid,
+      utm_rt_cid: rtkcid,
     }
     const response = await fetch(api_url, {
       method: "POST",
