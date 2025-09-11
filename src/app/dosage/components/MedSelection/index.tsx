@@ -87,7 +87,7 @@ export const MedSelection = () => {
     try {
       setIsSubmitting(true)
       setSelectedMed(med)
-      const rcid = params.get("rcid")
+      const rtkcid = params.get("rtkcid")
       const response = await fetch(`/api/session/complete`, {
         method: "POST",
         headers: {
@@ -95,7 +95,7 @@ export const MedSelection = () => {
         },
         body: JSON.stringify({
           med,
-          rcid,
+          rtkcid,
         }),
       })
 
