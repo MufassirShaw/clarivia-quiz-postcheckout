@@ -6,6 +6,7 @@ import Image from "next/image"
 import styles from "./medSelection.module.css"
 import { toast } from "react-toastify"
 import { Loader } from "@/components/Loader"
+import { useSearchParams } from "next/navigation"
 
 interface BottleOption {
   id: string
@@ -81,12 +82,13 @@ const options: BottleOption[] = [
 export const MedSelection = () => {
   const [selectedMed, setSelectedMed] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const params = useSearchParams()
 
   const completeSession = useCallback(async (med: string) => {
     try {
       setIsSubmitting(true)
       setSelectedMed(med)
-
+      const rcid = params.get("rcid")
       const response = await fetch(`/api/session/complete`, {
         method: "POST",
         headers: {
@@ -94,6 +96,7 @@ export const MedSelection = () => {
         },
         body: JSON.stringify({
           med,
+          rcid,
         }),
       })
 

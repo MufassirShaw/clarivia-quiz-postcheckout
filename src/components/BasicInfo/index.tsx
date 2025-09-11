@@ -7,15 +7,6 @@ import { useState } from "react"
 
 const today = new Date()
 
-const formDate = (date: string) => {
-  if (!date) {
-    return ""
-  }
-  const [day, month, year] = date.split("/")
-  return `${day.padStart(2, "0")}/${month.padStart(2, "0")}/${year}`
-}
-
-// Birthday formatting function
 const formatBirthday = (value: string) => {
   // Remove all non-digits
   const digits = value.replace(/\D/g, "")
@@ -39,20 +30,18 @@ const formatBirthday = (value: string) => {
 // Birthday validation logic
 const birthdaySchema = z
   .string()
-  .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Date must be in DD/MM/YYYY format")
+  .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Date must be in MM/DD/YYYY format")
   .refine((value) => {
-    const [day, month, year] = value.split("/").map((num) => parseInt(num))
-    const birthDate = new Date(`${month}/${day}/${year}`)
-
-    return !isNaN(birthDate.getTime()) // valid date
+    const birthDate = new Date(value)
+    return !isNaN(birthDate.getTime())
   }, "Please enter a valid date")
   .refine((value) => {
-    const [day, month, year] = value.split("/").map((num) => parseInt(num))
+    const [month, day, year] = value.split("/").map((num) => parseInt(num))
     const birthDate = new Date(year, month - 1, day)
     return birthDate <= today
   }, "Birth date cannot be in the future")
   .refine((value) => {
-    const [day, month, year] = value.split("/").map((num) => parseInt(num))
+    const [month, day, year] = value.split("/").map((num) => parseInt(num))
     const age =
       today.getFullYear() -
       year -
@@ -98,7 +87,7 @@ export const BasicInfo = ({
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
-    const [d, m, year] = data.birthday.split("/").map((num) => parseInt(num))
+    const [m, d, year] = data.birthday.split("/").map((num) => parseInt(num))
 
     const month = String(m).padStart(2, "0")
     const day = String(d).padStart(2, "0")
@@ -128,7 +117,7 @@ export const BasicInfo = ({
             touchedFields.birthday &&
             styles.validInput
           }`}
-          placeholder="DD/MM/YYYY"
+          placeholder="MM/DD/YYYY"
           id="birthday"
         />
         {errors.birthday && (
