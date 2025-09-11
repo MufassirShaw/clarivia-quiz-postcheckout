@@ -83,10 +83,11 @@ export const MedSelection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const completeSession = useCallback(async (med: string) => {
+    const params = new URLSearchParams(window.location.search)
     try {
       setIsSubmitting(true)
       setSelectedMed(med)
-
+      const rcid = params.get("rcid")
       const response = await fetch(`/api/session/complete`, {
         method: "POST",
         headers: {
@@ -94,6 +95,7 @@ export const MedSelection = () => {
         },
         body: JSON.stringify({
           med,
+          rcid,
         }),
       })
 

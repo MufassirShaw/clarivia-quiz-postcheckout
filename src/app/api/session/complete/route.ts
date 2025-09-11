@@ -7,7 +7,10 @@ export async function POST(request: NextRequest) {
   try {
     // Get sessionid from cookie
     const { sessionId } = await getLead()
-    const { med } = (await request.json()) as { med: string }
+    const { med, rcid } = (await request.json()) as {
+      med: string
+      rcid: string
+    }
     // Validate session exists
     if (!sessionId) {
       const err = new Error("Session not found. Please start a new session.")
@@ -19,11 +22,11 @@ export async function POST(request: NextRequest) {
     }
 
     const api_url = `${apiConfig.baseUrl}/sessions/${sessionId}/complete`
-
     const body = {
       med: [med],
       couponCode: null,
       session_id: sessionId,
+      utm_rt_cid: rcid,
     }
     const response = await fetch(api_url, {
       method: "POST",
