@@ -9,7 +9,7 @@ export default function Home() {
         <div className={styles.headerContent}>
           <h1 className={styles.logo}>Clarivia</h1>
           <div className={styles.trustBadges}>
-            <span className={styles.badge}>FDA Approved Ingredients</span>
+            <span className={styles.badge}>Prescription-Strength Formula</span>
             <span className={styles.badge}>HIPAA Secure</span>
           </div>
         </div>
