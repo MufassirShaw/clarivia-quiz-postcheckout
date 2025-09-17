@@ -4,24 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import styles from "./personalInfo.module.css"
 import { ILead } from "@/type/lead"
 import { useState, useRef, useEffect } from "react"
-
-// Validation schema
-const schema = z.object({
-  firstName: z
-    .string()
-    .min(2, "First name must be at least 2 characters long")
-    .nonempty("First name is required"),
-  lastName: z
-    .string()
-    .min(2, "Last name must be at least 2 characters long")
-    .nonempty("Last name is required"),
-  phone: z
-    .string()
-    .regex(/^\(\d{3}\) \d{3}-\d{4}$/, "Phone must be in format (123) 456-7890")
-    .nonempty("Phone number is required"),
-})
-
-type FormData = z.infer<typeof schema>
+import { formatPhoneNumber } from "@/utils/datefns"
+import { personalFormSchema, PersonalFormType } from "./schema"
 
 const ErrorMessage = ({ message }: { message?: string }) => (
   <p
@@ -33,40 +17,19 @@ const ErrorMessage = ({ message }: { message?: string }) => (
   </p>
 )
 
-// Phone number formatting function
-const formatPhoneNumber = (value: string) => {
-  // Remove all non-digits
-  const digits = value.replace(/\D/g, "")
-
-  // Limit to 10 digits
-  const limitedDigits = digits.slice(0, 10)
-
-  // Format based on length
-  if (limitedDigits.length <= 3) {
-    return limitedDigits.length > 0 ? `(${limitedDigits}` : ""
-  } else if (limitedDigits.length <= 6) {
-    return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(3)}`
-  } else {
-    return `(${limitedDigits.slice(0, 3)}) ${limitedDigits.slice(
-      3,
-      6
-    )}-${limitedDigits.slice(6)}`
-  }
+interface IPersonalInfo {
+  onAnswer: (info: Partial<ILead>) => Promise<void>
 }
 
-export const PersonalInfo = ({
-  onAnswer,
-}: {
-  onAnswer: (info: Partial<ILead>) => Promise<void>
-}) => {
+export const PersonalInfo = ({ onAnswer }: IPersonalInfo) => {
   const {
     register,
     handleSubmit,
     setValue,
     watch,
     formState: { errors, isValid, touchedFields },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
+  } = useForm<PersonalFormType>({
+    resolver: zodResolver(personalFormSchema),
     mode: "onChange",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -79,7 +42,7 @@ export const PersonalInfo = ({
     setValue("phone", formatted, { shouldValidate: true, shouldTouch: true })
   }
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: PersonalFormType) => {
     setIsSubmitting(true)
     await onAnswer({
       first_name: data.firstName,
@@ -138,7 +101,6 @@ export const PersonalInfo = ({
         />
         <ErrorMessage message={errors.lastName?.message} />
       </div>
-
       <div className={styles.formField}>
         <label htmlFor="phone" className={styles.fieldLabel}>
           Phone Number

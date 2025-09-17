@@ -1,80 +1,25 @@
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import styles from "./basicInfo.module.css"
 import { ILead } from "@/type/lead"
 import { useState } from "react"
+import { formatBirthday } from "@/utils/datefns"
+import { BasicInfoFormType, basicInfoSchema } from "./schema"
 
-const today = new Date()
-
-const formatBirthday = (value: string) => {
-  // Remove all non-digits
-  const digits = value.replace(/\D/g, "")
-
-  // Limit to 8 digits (DDMMYYYY)
-  const limitedDigits = digits.slice(0, 8)
-
-  // Format based on length
-  if (limitedDigits.length <= 2) {
-    return limitedDigits
-  } else if (limitedDigits.length <= 4) {
-    return `${limitedDigits.slice(0, 2)}/${limitedDigits.slice(2)}`
-  } else {
-    return `${limitedDigits.slice(0, 2)}/${limitedDigits.slice(
-      2,
-      4
-    )}/${limitedDigits.slice(4)}`
-  }
+interface IBasicInfoProps {
+  onAnswer: (info: Partial<ILead>) => Promise<void>
 }
 
-// Birthday validation logic
-const birthdaySchema = z
-  .string()
-  .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Date must be in MM/DD/YYYY format")
-  .refine((value) => {
-    const birthDate = new Date(value)
-    return !isNaN(birthDate.getTime())
-  }, "Please enter a valid date")
-  .refine((value) => {
-    const [month, day, year] = value.split("/").map((num) => parseInt(num))
-    const birthDate = new Date(year, month - 1, day)
-    return birthDate <= today
-  }, "Birth date cannot be in the future")
-  .refine((value) => {
-    const [month, day, year] = value.split("/").map((num) => parseInt(num))
-    const age =
-      today.getFullYear() -
-      year -
-      (today < new Date(today.getFullYear(), month - 1, day) ? 1 : 0)
-    return age >= 18
-  }, "You must be at least 18 years old")
-  .refine((value) => {
-    const year = parseInt(value.split("/")[2])
-    return today.getFullYear() - year <= 120
-  }, "Please enter a valid birth year")
-
-// Validation schema
-const schema = z.object({
-  birthday: birthdaySchema,
-  email: z.email("Enter a valid email address"),
-})
-
-type FormData = z.infer<typeof schema>
-
-export const BasicInfo = ({
-  onAnswer,
-}: {
-  onAnswer: (info: Partial<ILead>) => Promise<void>
-}) => {
+export const BasicInfo = ({ onAnswer }: IBasicInfoProps) => {
   const {
     register,
     handleSubmit,
     setValue,
     watch,
     formState: { errors, isValid, touchedFields },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    mode: "onChange", // validates as user types
+  } = useForm<BasicInfoFormType>({
+    resolver: zodResolver(basicInfoSchema),
+    mode: "onChange",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -85,7 +30,7 @@ export const BasicInfo = ({
     setValue("birthday", formatted, { shouldValidate: true, shouldTouch: true })
   }
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: BasicInfoFormType) => {
     setIsSubmitting(true)
     const [m, d, year] = data.birthday.split("/").map((num) => parseInt(num))
 
