@@ -2,7 +2,7 @@ import { apiConfig } from "@/config/api"
 import {
   AnswerType,
   ConsentType,
-  InterludeTypes,
+  // InterludeTypes,
   QuestionType,
 } from "@/type/quiz"
 
@@ -63,38 +63,38 @@ export const quizData = {
   totalQuestions: 26,
   questions: [
     // Question 1: Visual Severity Selector (Hook)
-    {
-      id: "severity",
-      type: QuestionType.Severity,
-      title: "Which best matches your nail condition?",
-      subtitle: "Select the image that most closely resembles your nails",
-      options: [
-        {
-          id: "mild",
-          label: "Mild Discoloration",
-          image: "/images/severity/1.png",
-          value: 1,
-        },
-        {
-          id: "moderate",
-          label: "Moderate Yellowing",
-          image: "/images/severity/2.png",
-          value: 2,
-        },
-        {
-          id: "significant",
-          label: "Significant Damage",
-          image: "/images/severity/3.png",
-          value: 3,
-        },
-        {
-          id: "severe",
-          label: "Severe Condition",
-          image: "/images/severity/4.png",
-          value: 4,
-        },
-      ],
-    },
+    // {
+    //   id: "severity",
+    //   type: QuestionType.Severity,
+    //   title: "Which best matches your nail condition?",
+    //   subtitle: "Select the image that most closely resembles your nails",
+    //   options: [
+    //     {
+    //       id: "mild",
+    //       label: "Mild Discoloration",
+    //       image: "/images/severity/1.png",
+    //       value: 1,
+    //     },
+    //     {
+    //       id: "moderate",
+    //       label: "Moderate Yellowing",
+    //       image: "/images/severity/2.png",
+    //       value: 2,
+    //     },
+    //     {
+    //       id: "significant",
+    //       label: "Significant Damage",
+    //       image: "/images/severity/3.png",
+    //       value: 3,
+    //     },
+    //     {
+    //       id: "severe",
+    //       label: "Severe Condition",
+    //       image: "/images/severity/4.png",
+    //       value: 4,
+    //     },
+    //   ],
+    // },
     // Question 2: Duration
     {
       id: "symptom_duration",
@@ -154,17 +154,17 @@ export const quizData = {
       ],
     },
     // Marketing Page 1: Social Proof
-    {
-      id: "social_proof",
-      type: QuestionType.Interlude,
-      component: InterludeTypes.SocialProof,
-      data: {
-        topline: "Looks like you're a good fit",
-        headline: "3,700 people just like you",
-        subheadline: "have chosen Clarivia",
-        avatars: true,
-      },
-    },
+    // {
+    //   id: "social_proof",
+    //   type: QuestionType.Interlude,
+    //   component: InterludeTypes.SocialProof,
+    //   data: {
+    //     topline: "Looks like you're a good fit",
+    //     headline: "3,700 people just like you",
+    //     subheadline: "have chosen Clarivia",
+    //     avatars: true,
+    //   },
+    // },
     // Question 5: Previous Diagnosis
     {
       id: "previous_diagnosis",
@@ -243,18 +243,18 @@ export const quizData = {
         answers["nail_concerns"] === "Other nail symptom",
     },
     // Marketing Page 2: Lifestyle Promise
-    {
-      id: "lifestyle_promise",
-      type: QuestionType.Interlude,
-      component: InterludeTypes.LifestylePromise,
-      data: {
-        headline:
-          "A busy life shouldn't stop you from having healthy, beautiful nails",
-        subheadline:
-          "By evaluating your answers in this quiz we'll be able to create your personalized treatment plan to help you achieve clear nails",
-        image: "transformation",
-      },
-    },
+    // {
+    //   id: "lifestyle_promise",
+    //   type: QuestionType.Interlude,
+    //   component: InterludeTypes.LifestylePromise,
+    //   data: {
+    //     headline:
+    //       "A busy life shouldn't stop you from having healthy, beautiful nails",
+    //     subheadline:
+    //       "By evaluating your answers in this quiz we'll be able to create your personalized treatment plan to help you achieve clear nails",
+    //     image: "transformation",
+    //   },
+    // },
 
     // Question 9: Medical Conditions
     {
@@ -306,14 +306,14 @@ export const quizData = {
     },
 
     // Marketing Page 3: Nail Health Profile
-    {
-      id: "nail_profile",
-      type: QuestionType.Interlude,
-      component: InterludeTypes.NailProfile,
-      data: {
-        title: "Summary of your Nail Health Profile",
-      },
-    },
+    // {
+    //   id: "nail_profile",
+    //   type: QuestionType.Interlude,
+    //   component: InterludeTypes.NailProfile,
+    //   data: {
+    //     title: "Summary of your Nail Health Profile",
+    //   },
+    // },
 
     // Question 12: Liver/Kidney Disease
     {
@@ -376,16 +376,16 @@ export const quizData = {
       ],
     },
     // Marketing Page 4: Timeline
-    {
-      id: "timeline",
-      type: QuestionType.Interlude,
-      component: InterludeTypes.Timeline,
-    },
-    {
-      id: "final_results",
-      type: QuestionType.Interlude,
-      component: InterludeTypes.FinalResults,
-    },
+    // {
+    //   id: "timeline",
+    //   type: QuestionType.Interlude,
+    //   component: InterludeTypes.Timeline,
+    // },
+    // {
+    //   id: "final_results",
+    //   type: QuestionType.Interlude,
+    //   component: InterludeTypes.FinalResults,
+    // },
     {
       id: "state",
       type: QuestionType.Select,
