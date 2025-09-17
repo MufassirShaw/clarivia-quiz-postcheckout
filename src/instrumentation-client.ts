@@ -7,3 +7,5 @@ Sentry.init({
   debug: false,
   environment: process.env.NODE_ENV === "development" ? "dev" : "prod",
 })
+
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart

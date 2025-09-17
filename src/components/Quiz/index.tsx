@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useMemo, useCallback } from "react"
-import SeverityQuestion, { SeverityQuestionType } from "../SeverityQuestion"
 import SingleChoiceQuestion, {
   SingleChoiceQuestionType,
 } from "../SingleChoiceQuestion"
@@ -10,15 +9,9 @@ import MultipleChoiceQuestion, {
 } from "../MultipleChoiceQuestion"
 import TextQuestion from "../TextQuestion"
 import { getDosableId, quizData } from "@/utils"
-import {
-  AnswerType,
-  ConsentType,
-  InterludeTypes,
-  QuestionType,
-} from "@/type/quiz"
+import { AnswerType, ConsentType, QuestionType } from "@/type/quiz"
 import styles from "./Quiz.module.css"
 import { ProgressBar } from "../ProgressBar"
-import { Interlude } from "../Interlude"
 import { SelectQuestion } from "../SelectQuestion"
 import { BasicInfo } from "../BasicInfo"
 import { PersonalInfo } from "../PersonalInfo"
@@ -231,14 +224,6 @@ export default function Quiz() {
     if (!currentQuestion) return null
 
     switch (currentQuestion.type) {
-      case QuestionType.Severity:
-        return (
-          <SeverityQuestion
-            onAnswer={handleAnswer}
-            currentAnswer={answers[currentQuestion.id] as number}
-            question={currentQuestion as SeverityQuestionType}
-          />
-        )
       case QuestionType.SingleChoice:
         return (
           <SingleChoiceQuestion
@@ -294,17 +279,6 @@ export default function Quiz() {
           />
         )
       }
-      case QuestionType.Interlude:
-        return (
-          <Interlude
-            handleSubmit={() => {
-              goToNextQuestion(answers, currentQuestionIndex)
-            }}
-            type={currentQuestion.component as InterludeTypes}
-            answers={answers}
-            key={currentQuestion.id}
-          />
-        )
       case QuestionType.Personal_Info:
         return (
           <PersonalInfo onAnswer={saveLeadToDosable} key={currentQuestion.id} />
