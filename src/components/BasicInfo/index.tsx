@@ -8,9 +8,10 @@ import { BasicInfoFormType, basicInfoSchema } from "./schema"
 
 interface IBasicInfoProps {
   onAnswer: (info: Partial<ILead>) => Promise<void>
+  defaultValues?: BasicInfoFormType
 }
 
-export const BasicInfo = ({ onAnswer }: IBasicInfoProps) => {
+export const BasicInfo = ({ onAnswer, defaultValues }: IBasicInfoProps) => {
   const {
     register,
     handleSubmit,
@@ -20,9 +21,12 @@ export const BasicInfo = ({ onAnswer }: IBasicInfoProps) => {
   } = useForm<BasicInfoFormType>({
     resolver: zodResolver(basicInfoSchema),
     mode: "onChange",
+    defaultValues: {
+      ...defaultValues,
+      birthday: formatBirthday(defaultValues?.birthday ?? ""),
+    },
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-
   const birthdayValue = watch("birthday")
 
   const handleBirthdayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,6 +68,7 @@ export const BasicInfo = ({ onAnswer }: IBasicInfoProps) => {
           }`}
           placeholder="MM/DD/YYYY"
           id="birthday"
+          disabled={!!defaultValues?.birthday}
         />
         {errors.birthday && (
           <p className={styles.errorMessage}>{errors.birthday.message}</p>
@@ -84,6 +89,7 @@ export const BasicInfo = ({ onAnswer }: IBasicInfoProps) => {
           }`}
           placeholder="name@example.com"
           id="email"
+          disabled={!!defaultValues?.email}
         />
         {errors.email && (
           <p className={styles.errorMessage}>{errors.email.message}</p>

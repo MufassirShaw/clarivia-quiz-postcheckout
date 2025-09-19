@@ -5,13 +5,10 @@ import * as Sentry from "@sentry/nextjs"
 
 export async function POST(request: NextRequest) {
   try {
-    // Get sessionid from cookie
     const { sessionId } = await getLead()
-    const { med, rtkcid } = (await request.json()) as {
-      med: string
+    const { rtkcid } = (await request.json()) as {
       rtkcid: string
     }
-    // Validate session exists
     if (!sessionId) {
       const err = new Error("Session not found. Please start a new session.")
       Sentry.captureException(err)
@@ -23,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     const api_url = `${apiConfig.baseUrl}/sessions/${sessionId}/complete`
     const body = {
-      med: [med],
+      med: [],
       couponCode: null,
       session_id: sessionId,
       utm_rt_cid: rtkcid,
@@ -55,11 +52,11 @@ export async function POST(request: NextRequest) {
 
     const data = (await response.json()) as {
       completed: boolean
-      checkout_url: string
+      thanks_url: string
       message: string
     }
 
-    const { completed, checkout_url, message } = data
+    const { completed, thanks_url, message } = data
 
     if (!completed) {
       const err = new Error(message || "Session completion failed.")
@@ -72,13 +69,14 @@ export async function POST(request: NextRequest) {
 
     console.log({
       body,
-      url: data.checkout_url,
+      url: data.thanks_url,
+      data,
     })
 
     // Clear the session cookie
     await clearLead()
 
-    return NextResponse.json({ url: checkout_url }, { status: 200 })
+    return NextResponse.json({ url: thanks_url }, { status: 200 })
   } catch (error) {
     console.error("Error processing request:", error)
     Sentry.captureException(error)

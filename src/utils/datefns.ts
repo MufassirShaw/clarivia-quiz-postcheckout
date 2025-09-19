@@ -1,5 +1,8 @@
 export const formatBirthday = (value: string) => {
   // Remove all non-digits
+  if (!value) {
+    return ""
+  }
   const digits = value.replace(/\D/g, "")
 
   // Limit to 8 digits (DDMMYYYY)
@@ -19,6 +22,9 @@ export const formatBirthday = (value: string) => {
 }
 
 export const formatPhoneNumber = (value: string) => {
+  if (!value) {
+    return ""
+  }
   // Remove all non-digits
   const digits = value.replace(/\D/g, "")
 

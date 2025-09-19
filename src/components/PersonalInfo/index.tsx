@@ -19,9 +19,10 @@ const ErrorMessage = ({ message }: { message?: string }) => (
 
 interface IPersonalInfo {
   onAnswer: (info: Partial<ILead>) => Promise<void>
+  defaultValues?: PersonalFormType
 }
 
-export const PersonalInfo = ({ onAnswer }: IPersonalInfo) => {
+export const PersonalInfo = ({ onAnswer, defaultValues }: IPersonalInfo) => {
   const {
     register,
     handleSubmit,
@@ -31,6 +32,10 @@ export const PersonalInfo = ({ onAnswer }: IPersonalInfo) => {
   } = useForm<PersonalFormType>({
     resolver: zodResolver(personalFormSchema),
     mode: "onChange",
+    defaultValues: {
+      ...defaultValues,
+      phone: formatPhoneNumber(defaultValues?.phone ?? ""),
+    },
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const containerRef = useRef<HTMLButtonElement>(null)
@@ -78,6 +83,7 @@ export const PersonalInfo = ({ onAnswer }: IPersonalInfo) => {
           }`}
           placeholder="John"
           id="firstName"
+          disabled={!!defaultValues?.firstName}
         />
         <ErrorMessage message={errors.firstName?.message} />
       </div>
@@ -98,6 +104,7 @@ export const PersonalInfo = ({ onAnswer }: IPersonalInfo) => {
           }`}
           placeholder="Smith"
           id="lastName"
+          disabled={!!defaultValues?.lastName}
         />
         <ErrorMessage message={errors.lastName?.message} />
       </div>
@@ -116,6 +123,7 @@ export const PersonalInfo = ({ onAnswer }: IPersonalInfo) => {
           }`}
           placeholder="(555) 123-4567"
           id="phone"
+          disabled={!!defaultValues?.phone}
         />
         <ErrorMessage message={errors.phone?.message} />
       </div>
