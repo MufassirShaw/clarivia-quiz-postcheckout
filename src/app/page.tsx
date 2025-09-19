@@ -1,6 +1,8 @@
 "use client"
 import Quiz from "@/components/Quiz"
 import styles from "./page.module.css"
+import { Suspense } from "react"
+import { FullScreenLoader } from "@/components/FullScreenLoader"
 
 export default function Home() {
   return (
@@ -14,7 +16,10 @@ export default function Home() {
           </div>
         </div>
       </header>
-      <Quiz />
+      <Suspense fallback={<FullScreenLoader />}>
+        <Quiz />
+      </Suspense>
+
       <footer className={styles.trustFooter}>
         <div className={styles.securityInfo}>
           <svg

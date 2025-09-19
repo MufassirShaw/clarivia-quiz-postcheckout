@@ -362,6 +362,11 @@ export default function Quiz() {
 
   const initiateSession = useCallback(async () => {
     const orderId = searchParams.get("orderId")
+    if (!orderId) {
+      toast.error("No order id found")
+      return
+    }
+
     const res = await fetch(`/api/session/create`, {
       method: "POST",
       headers: {
