@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
+import { useState, useMemo, useCallback, useEffect } from "react"
 import SingleChoiceQuestion, {
   SingleChoiceQuestionType,
 } from "../SingleChoiceQuestion"
@@ -12,23 +12,25 @@ import { getDosableId, quizData } from "@/utils"
 import { AnswerType, ConsentType, QuestionType } from "@/type/quiz"
 import styles from "./Quiz.module.css"
 import { ProgressBar } from "../ProgressBar"
-import { SelectQuestion } from "../SelectQuestion"
+// import { SelectQuestion } from "../SelectQuestion"
 import { BasicInfo } from "../BasicInfo"
 import { PersonalInfo } from "../PersonalInfo"
 import { Consent } from "../Consent"
 import { Modal } from "../Modal"
 import { toast } from "react-toastify"
 import { ILead } from "@/type/lead"
-import { useRouter } from "next/navigation"
+import { useSearchParams } from "next/navigation"
+import { ICreateSessionResponse } from "@/type/session"
 
 export default function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, AnswerType>>({})
   const [hardStopModalOpen, setHardStopModalOpen] = useState(false)
-  const [leadState, setLeadState] = useState("")
+  // const [leadState, setLeadState] = useState("")
+  const searchParams = useSearchParams()
+  const [leadData, setLeadData] = useState<Partial<ILead> | null>(null)
 
   const currentQuestion = quizData.questions[currentQuestionIndex]
-  const router = useRouter()
 
   const saveAnswerToDosable = useCallback(
     async ({
@@ -118,6 +120,46 @@ export default function Quiz() {
     []
   )
 
+  const completeSession = useCallback(async () => {
+    const params = new URLSearchParams(window.location.search)
+    try {
+      const rtkcid = params.get("rtkcid")
+      const response = await fetch(`/api/session/complete`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          rtkcid,
+        }),
+      })
+
+      if (!response.ok) {
+        throw Error(response.statusText)
+      }
+
+      const { url } = (await response.json()) as {
+        url: string
+      }
+
+      if (!url) {
+        return
+      }
+
+      const currentUrl = new URL(window.location.href)
+      const newUrl = new URL(url, window.location.origin)
+
+      currentUrl.searchParams.forEach((value, key) => {
+        newUrl.searchParams.set(key, value)
+      })
+
+      window.location.assign(newUrl.toString())
+    } catch (error) {
+      toast.error("Something went wrong, try again!")
+      console.log("something went wrong", error)
+    }
+  }, [])
+
   const handleAnswer = useCallback(
     async (answer: AnswerType) => {
       if (currentQuestion?.triggerHardStop?.(answer)) {
@@ -128,15 +170,7 @@ export default function Quiz() {
       try {
         if (currentQuestion.isLast) {
           await saveAnswers({ ...answers, [currentQuestion.id]: answer })
-
-          const currentUrl = new URL(window.location.href)
-          const dosageUrl = new URL("/dosage", window.location.origin)
-
-          currentUrl.searchParams.forEach((value, key) => {
-            dosageUrl.searchParams.set(key, value)
-          })
-
-          router.push(dosageUrl.pathname + dosageUrl.search)
+          await completeSession()
           return
         }
 
@@ -157,7 +191,7 @@ export default function Quiz() {
       currentQuestion,
       saveAnswers,
       answers,
-      router,
+      completeSession,
       goToNextQuestion,
       currentQuestionIndex,
     ]
@@ -192,33 +226,33 @@ export default function Quiz() {
     [answers, goToNextQuestion, currentQuestionIndex]
   )
 
-  const createLead = useCallback(
-    async (lead: Partial<ILead>) => {
-      try {
-        const response = await fetch("/api/leads", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...lead,
-            lead_state: leadState,
-          }),
-        })
+  // const createLead = useCallback(
+  //   async (lead: Partial<ILead>) => {
+  //     try {
+  //       const response = await fetch("/api/leads", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           ...lead,
+  //           lead_state: leadState,
+  //         }),
+  //       })
 
-        if (response.ok) {
-          goToNextQuestion(answers, currentQuestionIndex)
-          return
-        }
+  //       if (response.ok) {
+  //         goToNextQuestion(answers, currentQuestionIndex)
+  //         return
+  //       }
 
-        throw Error(response.statusText)
-      } catch (error) {
-        toast.error("Opps! something went wrong")
-        console.error("Error initializing session:", error)
-      }
-    },
-    [answers, currentQuestionIndex, goToNextQuestion, leadState]
-  )
+  //       throw Error(response.statusText)
+  //     } catch (error) {
+  //       toast.error("Opps! something went wrong")
+  //       console.error("Error initializing session:", error)
+  //     }
+  //   },
+  //   [answers, currentQuestionIndex, goToNextQuestion, leadState]
+  // )
 
   const component = useMemo(() => {
     if (!currentQuestion) return null
@@ -255,37 +289,54 @@ export default function Quiz() {
         )
       }
 
-      case QuestionType.Select: {
-        /**
-         * This is only used for lead.state atm
-         * Needs to be refactored if we get another select type question
-         */
-        return (
-          <SelectQuestion
-            key={currentQuestion.id}
-            options={
-              currentQuestion.options as Array<{ name: string; value: string }>
-            }
-            name={currentQuestion.name}
-            label={currentQuestion.label ?? ""}
-            placeholder={currentQuestion.placeholder}
-            banner={currentQuestion.banner}
-            currentAnswer={answers[currentQuestion.id] as string}
-            onAnswer={async (lead) => {
-              setLeadState(lead.lead_state ?? "")
-              goToNextQuestion(answers, currentQuestionIndex)
-            }}
-            required={currentQuestion.required}
-          />
-        )
-      }
+      // case QuestionType.Select: {
+      /**
+       * This is only used for lead.state atm
+       * Needs to be refactored if we get another select type question
+       */
+      //   return (
+      //     <SelectQuestion
+      //       key={currentQuestion.id}
+      //       options={
+      //         currentQuestion.options as Array<{ name: string; value: string }>
+      //       }
+      //       name={currentQuestion.name}
+      //       label={currentQuestion.label ?? ""}
+      //       placeholder={currentQuestion.placeholder}
+      //       banner={currentQuestion.banner}
+      //       currentAnswer={answers[currentQuestion.id] as string}
+      //       onAnswer={async (lead) => {
+      //          setLeadState(lead.lead_state ?? "")
+      //         goToNextQuestion(answers, currentQuestionIndex)
+      //       }}
+      //       required={currentQuestion.required}
+      //     />
+      //   )
+      // }
       case QuestionType.Personal_Info:
         return (
-          <PersonalInfo onAnswer={saveLeadToDosable} key={currentQuestion.id} />
+          <PersonalInfo
+            onAnswer={saveLeadToDosable}
+            key={currentQuestion.id}
+            defaultValues={{
+              firstName: leadData?.first_name ?? "",
+              lastName: leadData?.last_name ?? "",
+              phone: leadData?.phone ?? "",
+            }}
+          />
         )
 
       case QuestionType.Basic_Info:
-        return <BasicInfo onAnswer={createLead} key={currentQuestion.id} />
+        return (
+          <BasicInfo
+            onAnswer={saveLeadToDosable}
+            key={currentQuestion.id}
+            defaultValues={{
+              email: leadData?.email ?? "",
+              birthday: leadData?.birthday ?? "",
+            }}
+          />
+        )
 
       case QuestionType.Consent:
         return (
@@ -298,15 +349,7 @@ export default function Quiz() {
       default:
         return <div>Unknown question type: {currentQuestion.type}</div>
     }
-  }, [
-    currentQuestion,
-    handleAnswer,
-    answers,
-    saveLeadToDosable,
-    createLead,
-    goToNextQuestion,
-    currentQuestionIndex,
-  ])
+  }, [currentQuestion, answers, handleAnswer, saveLeadToDosable, leadData])
 
   const progress = useMemo(() => {
     if (!currentQuestionIndex) {
@@ -317,10 +360,42 @@ export default function Quiz() {
     return ((currentQuestionIndex + 1) / totalQuestion) * 100
   }, [currentQuestionIndex])
 
+  const initiateSession = useCallback(async () => {
+    const orderId = searchParams.get("orderId")
+    if (!orderId) {
+      toast.error("No order id found")
+      return
+    }
+
+    const res = await fetch(`/api/session/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        orderId,
+      }),
+    })
+
+    if (res.ok) {
+      const { data } = (await res.json()) as { data: ICreateSessionResponse }
+      setLeadData(data.lead_data)
+    }
+  }, [searchParams])
+
+  useEffect(() => {
+    initiateSession()
+  }, [initiateSession])
+
   return (
     <>
       <ProgressBar progress={progress} />
       <div className={styles.quizMain}>
+        <div className={styles.urgencyBanner}>
+          <span>Last Step - </span>
+          Please answer your question below to finalize your order. <br />
+          It&apos;s just like an intake form at your doctor.
+        </div>
         <div className={styles.quizContent} key={currentQuestion?.id}>
           <div
             className={styles.questionWrapper}
@@ -351,7 +426,6 @@ export default function Quiz() {
           </div>
         </div>
       </div>
-
       <Modal
         isOpen={hardStopModalOpen}
         onOpenChange={(op) => setHardStopModalOpen(op)}

@@ -2,6 +2,7 @@
 .quizMain {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
@@ -79,5 +80,21 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.urgencyBanner {
+  background: #c7dcfe;
+  border: 1px solid #2476fb;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  text-align: center;
+  font-weight: 500;
+  color: #0e5092;
+  font-size: 1.3rem;
+
+  > span {
+    font-weight: bold;
   }
 }
