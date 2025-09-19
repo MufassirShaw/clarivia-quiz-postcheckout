@@ -3,19 +3,6 @@ import { AnswerType, ConsentType, QuestionType } from "@/type/quiz"
 export const quizData = {
   totalQuestions: 26,
   questions: [
-    // Question 2: Duration
-    {
-      id: "symptom_duration",
-      type: QuestionType.SingleChoice,
-      title: "How long have you been experiencing these symptoms?",
-      options: [
-        { value: "less_3_months", label: "Less than 3 months" },
-        { value: "3_6_months", label: "3-6 months" },
-        { value: "6_12_months", label: "6-12 months" },
-        { value: "over_12_months", label: "More than 12 months" },
-      ],
-    },
-    // Question 3: Nail Concerns
     {
       id: "nail_concerns",
       type: QuestionType.SingleChoice,
@@ -31,6 +18,19 @@ export const quizData = {
         { value: "other", label: "Other nail symptom" },
       ],
     },
+    // Question 2: Duration
+    {
+      id: "symptom_duration",
+      type: QuestionType.SingleChoice,
+      title: "How long have you been experiencing these symptoms?",
+      options: [
+        { value: "less_3_months", label: "Less than 3 months" },
+        { value: "3_6_months", label: "3-6 months" },
+        { value: "6_12_months", label: "6-12 months" },
+        { value: "over_12_months", label: "More than 12 months" },
+      ],
+    },
+    // Question 3: Nail Concerns
     // Question 3a: Tell us more about nail symptoms (conditional)
     {
       id: "nail_symptoms_details",

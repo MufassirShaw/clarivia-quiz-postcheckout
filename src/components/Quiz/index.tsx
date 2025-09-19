@@ -391,6 +391,11 @@ export default function Quiz() {
     <>
       <ProgressBar progress={progress} />
       <div className={styles.quizMain}>
+        <div className={styles.urgencyBanner}>
+          <span>Last Step - </span>
+          Please answer your question below to finalize your order. <br />
+          It&apos;s just like an intake form at your doctor.
+        </div>
         <div className={styles.quizContent} key={currentQuestion?.id}>
           <div
             className={styles.questionWrapper}
