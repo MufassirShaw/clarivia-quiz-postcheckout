@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       med: [],
       couponCode: null,
       session_id: sessionId,
-      utm_rt_cid: rtkcid,
+      utm_content: rtkcid,
     }
     const response = await fetch(api_url, {
       method: "POST",
